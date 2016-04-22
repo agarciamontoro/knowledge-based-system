@@ -4,6 +4,9 @@
     (multislot nombreslot3)
 )
 
+; Regla que permite introducir un hecho del tipo TTT con una sóla línea,
+; separando los slots con espacios y dejando el único multislot, también
+; separado con espacios, al final-
 (defrule IntroducirTTT
     =>
     ; Se pide la información perteneciente a un TTT
