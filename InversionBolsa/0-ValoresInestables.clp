@@ -5,7 +5,8 @@
     ; después si fuera necesario.
     (declare (salience 10))
 
-    ?f <- (Valor (Nombre ?valor) (Sector Construccion))
+    ?f <- (Valor (Nombre ?valor) (Sector Construccion)
+                 (Estabilidad ~Inestable))
     =>
     (modify ?f (Estabilidad Inestable))
 )
@@ -18,10 +19,11 @@
     ; después si fuera necesario.
     (declare (salience 10))
 
-    ?f <- (Valor (Nombre ?valor) (Sector Servicios))
     ; La economía va mal si el sector Ibex ha tenido pérdidas en los últimos
     ; 5 días
     (Sector (Nombre Ibex) (Perd5Consec true))
+    ?f <- (Valor (Nombre ?valor) (Sector Servicios)
+                 (Estabilidad ~Inestable))
     =>
     (modify ?f (Estabilidad Inestable))
 )
@@ -34,7 +36,8 @@
     ; después si fuera necesario.
     (declare (salience 10))
 
-    ?f <- (Valor (Nombre ?valor))
+    ?f <- (Valor (Nombre ?valor)
+                 (Estabilidad ~Inestable))
     (Noticia (Nombre Economia) (Tipo Mala) (Antiguedad ?antig))
     (test (<= ?antig 2))
     =>
@@ -48,7 +51,8 @@
     ; Las noticias positivas siempre prevalecen sobre las negativas, así que
     ; esta regla debe ejecutarse la última.
     (declare (salience -10))
-    ?f <- (Valor (Nombre ?valor) (Sector ?sector))
+    ?f <- (Valor (Nombre ?valor) (Sector ?sector)
+                 (Estabilidad ~Estable))
     (Noticia (Nombre ?noticia) (Tipo Buena) (Antiguedad ?antig))
     (test (<= ?antig 2))
     (or (eq ?noticia ?valor) (eq ?noticia ?sector))
@@ -61,11 +65,10 @@
 ; 5.- Si hay una noticia negativa sobre un sector, los valores del sector pasan
 ; a ser inestables durante 2 días
 (defrule NoticiaNegativa
-    ?f <- (Valor (Nombre ?valor) (Sector ?sector))
+    ?f <- (Valor (Nombre ?valor) (Sector ?sector)
+                 (Estabilidad ~Inestable))
     (Noticia (Nombre ?noticia) (Tipo Mala) (Antiguedad ?antig))
-    (test
-        (or (eq ?noticia ?valor) (eq ?noticia ?sector))
-    )
+    (or (eq ?noticia ?valor) (eq ?noticia ?sector))
     (test (<= ?antig 2))
     =>
     (modify ?f (Estabilidad Inestable))
