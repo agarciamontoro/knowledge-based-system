@@ -20,6 +20,9 @@
     (field VarTri)
     (field VarSem)
     (field VarAnual)
+    (field Estabilidad
+        (default NULL)
+    )
 )
 
 ; Definición de los atributos propios de un sector
