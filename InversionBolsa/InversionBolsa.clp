@@ -10,10 +10,17 @@
     ; Módulo 1: Detección de valores peligrosos
     (load "1-ValoresPeligrosos.clp")
 
+    ; Módulo 2: Detección de valores sobrevalorados
+    (load "2-ValoresSobrevalorados.clp")
+
+    ; Módulo 3: Detección de valores infravalorados
+    (load "3-ValoresInfravalorados.clp")
+
     (reset)
 
     ; Empezamos por el módulo 0
     (assert (Modulo 0))
+    
     (run)
 )
 
