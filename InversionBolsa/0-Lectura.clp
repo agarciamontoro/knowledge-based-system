@@ -13,6 +13,7 @@
 ; Abre el fichero de valores
 (defrule openFileValores
     (declare (salience 2))
+    (Modulo 0)
     (Fichero Valores ?file)
     =>
     (open ?file DatosValores)
@@ -22,6 +23,7 @@
 ; Lee el fichero de valores y guarda sus DatosValores
 (defrule readFileValores
     (declare (salience 1))
+    (Modulo 0)
     ?f <- (SeguirLeyendo Valores)
     =>
     (bind ?PrimerCampo (read DatosValores))
@@ -43,8 +45,8 @@
               (Var5Dias (read DatosValores))
               (Perd3Consec (read DatosValores))
               (Perd5Consec (read DatosValores))
-              (VarRespSector (read DatosValores))
-              (VarRespSectorChico (read DatosValores))
+              (VarRelativaSector (read DatosValores))
+              (VarRelativaSectorChico (read DatosValores))
               (VarMes (read DatosValores))
               (VarTri (read DatosValores))
               (VarSem (read DatosValores))
@@ -58,6 +60,7 @@
 ; Cierra el fichero de Valores
 (defrule closeFileValores
     (declare (salience -1))
+    (Modulo 0)
     =>
     (close DatosValores)
 )
@@ -69,6 +72,7 @@
 ; Abre el fichero de Sectores
 (defrule openFileSectores
     (declare (salience 2))
+    (Modulo 0)
     (Fichero Sectores ?file)
     =>
     (open ?file DatosSectores)
@@ -78,6 +82,7 @@
 ; Lee el fichero de Sectores y guarda sus datos
 (defrule readFileSectores
     (declare (salience 1))
+    (Modulo 0)
     ?f <- (SeguirLeyendo Sectores)
     =>
     (bind ?PrimerCampo (read DatosSectores))
@@ -107,6 +112,7 @@
 ; Cierra el fichero de Sectores
 (defrule closeFileSectores
     (declare (salience -1))
+    (Modulo 0)
     =>
     (close DatosSectores)
 )
@@ -118,6 +124,7 @@
 ; Abre el fichero de Noticias
 (defrule openFileNoticias
     (declare (salience 2))
+    (Modulo 0)
     (Fichero Noticias ?file)
     =>
     (open ?file DatosNoticias)
@@ -127,6 +134,7 @@
 ; Lee el fichero de Noticias y guarda sus datos
 (defrule readFileNoticias
     (declare (salience 1))
+    (Modulo 0)
     ?f <- (SeguirLeyendo Noticias)
     =>
     (bind ?PrimerCampo (read DatosNoticias))
@@ -146,6 +154,7 @@
 ; Cierra el fichero de Noticias
 (defrule closeFileNoticias
     (declare (salience -1))
+    (Modulo 0)
     =>
     (close DatosNoticias)
 )
@@ -158,6 +167,7 @@
 ; Abre el fichero de Cartera
 (defrule openFileCartera
     (declare (salience 2))
+    (Modulo 0)
     (Fichero Cartera ?file)
     =>
     (open ?file DatosCartera)
@@ -167,6 +177,7 @@
 ; Lee el fichero de Noticias y guarda sus datos
 (defrule readFileCartera
     (declare (salience 1))
+    (Modulo 0)
     ?f <- (SeguirLeyendo Cartera)
     =>
     (bind ?PrimerCampo (read DatosCartera))
@@ -186,6 +197,7 @@
 ; Cierra el fichero de Noticias
 (defrule closeFileCartera
     (declare (salience -1))
+    (Modulo 0)
     =>
     (close DatosCartera)
 )

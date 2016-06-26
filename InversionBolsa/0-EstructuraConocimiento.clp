@@ -14,8 +14,8 @@
     (field Var5Dias)
     (field Perd3Consec)
     (field Perd5Consec)
-    (field VarRespSector)
-    (field VarRespSectorChico)
+    (field VarRelativaSector)
+    (field VarRelativaSectorChico)
     (field VarMes)
     (field VarTri)
     (field VarSem)
@@ -54,4 +54,7 @@
     (field Nombre)
     (field Acciones)
     (field Valor)
+    (field Peligroso
+        (default false)
+    )
 )
