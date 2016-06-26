@@ -1,0 +1,52 @@
+; Si el PER es Bajo y el RPD alto, la empresa está infravalorada
+(defrule InfravaloracionGeneral
+    (Modulo 3)
+    ?f <- (Valor (EtiqPER Bajo) (EtiqRPD Alto) (Valoracion ~Infravalorado))
+    =>
+    (modify ?f (Valoracion Infravalorado))
+)
+
+; Si la empresa ha caído bastante (más de un 30%) (en los últimos 3, 6 o 12 ), ; ha subido pero no mucho en el último mes, y el PER es bajo, la  empresa está
+; infravalorada
+(defrule InfravaloracionCaida
+    (Modulo 3)
+    ?f <- (Valor (EtiqPER Bajo) (VarMensual ?mes) (Valoracion ~Infravalorado)
+                 (VarTrimestral ?trim) (VarSemestral ?sem) (VarAnual ?anual))
+    (and
+        ; El experto indicó que "subir no mucho" es estar entre un 0% y un 10%
+        (> ?mes 0) (< ?mes 10)
+        ; La caída anterior puede ser trimestral, mensual o anual
+        (or
+            (< ?trim -30)
+            (< ?sem -30)
+            (< ?anual -30)
+        )
+    )
+    =>
+    (modify ?f (Valoracion Infravalorado))
+)
+
+
+; Si la empresa es grande, el RPD es alto y el PER Mediano, además no está
+; bajando y se comporta mejor que su sector, la empresa está infravalorada
+(defrule InfravaloracionEmpresaGrande
+    (Modulo 3)
+    ?f <- (Valor (EtiqPER Medio) (EtiqRPD Alto) (Tam Grande)
+                 (VarMensual ?mes) (VarRelativaSector ?varSector)
+                 (Valoracion ~Infravalorado))
+    (and
+        (>= ?mes 0) ; La empresa no está bajando
+        (> ?varSector 0) ; Se comporta mejor que su sector
+    )
+    =>
+    (modify ?f (Valoracion Infravalorado))
+)
+
+; Cambia al módulo 4
+(defrule AvanzarAModulo4
+    (declare (salience -1))
+    ?f <- (Modulo 3)
+    =>
+    (retract ?f)
+    (assert (Modulo 4))
+)
