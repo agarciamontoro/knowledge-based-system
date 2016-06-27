@@ -16,11 +16,14 @@
     ; Módulo 3: Detección de valores infravalorados
     (load "3-ValoresInfravalorados.clp")
 
+    ; Módulo 4.1: Obtención de propuestas
+    (load "4.1-ObtencionPropuestas.clp")
+
     (reset)
 
     ; Empezamos por el módulo 0
     (assert (Modulo 0))
-    
+
     (run)
 )
 

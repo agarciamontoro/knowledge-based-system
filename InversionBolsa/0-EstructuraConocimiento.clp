@@ -65,6 +65,7 @@
 ; Definición de los atributos propios de una posible propuesta al usuario
 (deftemplate Propuesta
     (slot Propuesta)
-    (slot Acciones)
+    (slot NumAcciones)
+    (slot RE)
     (slot Razon)
 )

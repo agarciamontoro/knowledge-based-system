@@ -36,7 +36,7 @@
               (VarDia (read DatosValores))
               (Capitalizacion (read DatosValores))
               (PER (read DatosValores))
-              (RPD (read DatosValores))
+              (RPD (* 100 (read DatosValores)))
               (Tam (read DatosValores))
               (Ibex (read DatosValores))
               (EtiqPER (read DatosValores))
