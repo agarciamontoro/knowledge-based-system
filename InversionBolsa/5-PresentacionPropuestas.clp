@@ -222,7 +222,10 @@
 
     ; Restamos el valor de la transacción al capital líquido
     (modify ?disponible (Valor (- ?liquido ?valorTransaccion)))
-    
+
+    ; Si ya tenemos un valor en la cartera de la empresa en la que queremos
+    ; invertir, el nuevo número de acciones será la suma de las previas más
+    ; las compradas
     (do-for-fact
         ((?vc ValorCartera))
         (eq ?empresa (fact-slot-value ?vc Nombre))
