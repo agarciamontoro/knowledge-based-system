@@ -27,7 +27,7 @@
         (default NULL)
     )
     (multislot Valoracion
-        (default NULL)
+        (default NULL NULL)
     )
 )
 
@@ -61,14 +61,13 @@
     (slot Acciones)
     (slot Valor)
     (multislot Peligroso
-        (default false)
+        (default false NULL)
     )
 )
 
 ; Definición de los atributos propios de una posible propuesta al usuario
 (deftemplate Propuesta
     (multislot Propuesta)
-    (slot NumAcciones)
     (slot RE)
     (slot PropuestaRedactada)
     (slot Razon)

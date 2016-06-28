@@ -1,7 +1,7 @@
 ; Si el PER es Alto y el RPD bajo, la empresa está sobrevalorada
 (defrule SobrevaloracionGeneral
     (Modulo 2)
-    ?f <- (Valor (EtiqPER Alto) (EtiqRPD Bajo) (Valoracion ~Sobrevalorado))
+    ?f <- (Valor (EtiqPER Alto) (EtiqRPD Bajo) (Valoracion ~Sobrevalorado ?x))
     =>
     (modify ?f (Valoracion Sobrevalorado "el PER es alto y el RPD, bajo"))
 )
@@ -12,7 +12,7 @@
 (defrule SobrevaloracionEmpresaPequenia1
     (Modulo 2)
     ?f <- (Valor (EtiqPER ?per) (EtiqRPD ?rpd) (Tam Pequenio)
-                 (Valoracion ~Sobrevalorado))
+                 (Valoracion ~Sobrevalorado ?x))
     (or
         (eq ?per Alto)
         (and (eq ?per Medio) (eq ?rpd Bajo))
@@ -34,7 +34,7 @@
 (defrule SobrevaloracionEmpresaGrande
     (Modulo 2)
     ?f <- (Valor (EtiqPER ?per) (EtiqRPD ?rpd) (Tam Grande)
-                 (Valoracion ~Sobrevalorado))
+                 (Valoracion ~Sobrevalorado ?x))
     (or
         (and
             (eq ?rpd Bajo)

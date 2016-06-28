@@ -10,7 +10,6 @@
     (assert
         (Propuesta
             (Propuesta Vender ?valor NULL)
-            (NumAcciones ?acc)
             (RE (- 20 ?rpd))
             (Razon
                 (str-cat "La empresa es peligrosa porque " ?razon ". Además, está entrando en tendencia bajista con respecto a su sector. Según mi estimación, existe una probabilidad no despreciable de que pueda caer al cabo del año un 20%: aunque produzca " ?rpd "% por dividendos, perderíamos un " (- 20 ?rpd) "%")
@@ -30,29 +29,25 @@
     (Valor (Nombre ?valor) (Valoracion Infravalorado ?razonInfra)
            (Sector ?sector) (Precio ?precio) (PER ?per) (RPD ?rpd))
     (Sector (Nombre ?sector) (PER ?perMedio))
-    (ValorCartera (Nombre Disponible) (Valor ?dinero))
-    (> ?dinero ?precio)
+    (ValorCartera (Nombre DISPONIBLE) (Valor ?dinero))
+    (test (> ?dinero ?precio))
 
     =>
-
-    ; TODO: Ver qué número de acciones proponemos :(
-    (bind ?acc 100000000000)
 
     (assert
         (Propuesta
             (Propuesta Comprar NULL ?valor)
-            (NumAcciones ?acc)
             (RE
-                (/
+                (* 100 (/
                     (- ?perMedio ?per)
                     (+ (* 5 ?per) ?rpd)
-                )
+                ))
             )
             (Razon
                 (str-cat "Esta empresa está infravalorada -" ?razonInfra "- y seguramente el PER tienda al PER medio en 5 años, con lo que se debería revalorizar un " (/ (- ?perMedio ?per) (* 5 ?per)) "% anual a lo que habría que sumar el " ?rpd "% de beneficios por dividendos")
             )
             (PropuestaRedactada
-                (str-cat "Comprar " ?acc " acciones de " ?valor)
+                (str-cat "Comprar acciones de " ?valor)
             )
         )
     )
@@ -63,7 +58,7 @@
 (defrule VenderSobrevalorada
     (Modulo 4)
     (ValorCartera (Nombre ?valor) (Acciones ?acc))
-    (Valor (Nombre ?valor) (Valoracion Sobrevalorada ?razonSobre) (RPA ?rpa)
+    (Valor (Nombre ?valor) (Valoracion Sobrevalorado ?razonSobre) (RPA ?rpa)
            (PER ?per) (RPD ?rpd) (Sector ?sector))
     (Sector (Nombre ?sector) (PER ?perMedio))
 
@@ -75,7 +70,6 @@
     (assert
         (Propuesta
             (Propuesta Vender ?valor NULL)
-            (NumAcciones ?acc)
             (RE
                 (/
                     (- (- ?per ?perMedio) ?rpd)
@@ -95,9 +89,9 @@
 ; Proponer cambiar una inversión a valores más rentables
 (defrule CambiarInversion
     (Modulo 4)
-    (Valor (Nombre ?empresa1) (Valoracion ~Sobrevalorada) (RPD ?rpd1))
-    (ValorCartera (Nombre ?empresa2) (Acciones ?acc))
-    (Valor (Nombre ?empresa2) (Valoracion ~Infravalorada) (RPD ?rpd2)
+    (Valor (Nombre ?empresa1) (Valoracion ~Sobrevalorado ?a) (RPD ?rpd1))
+    (ValorCartera (Nombre ?empresa2))
+    (Valor (Nombre ?empresa2) (Valoracion ~Infravalorado ?b) (RPD ?rpd2)
            (RPA ?rpa2))
     (test (neq ?empresa1 ?empresa2))
 
@@ -108,7 +102,6 @@
     (assert
         (Propuesta
             (Propuesta Cambiar ?empresa2 ?empresa1)
-            (NumAcciones ?acc)
             (RE (- ?rpd1 (+ ?rpa2 ?rpd2 1)))
             (Razon
                 (str-cat ?empresa1 " debe tener una revalorización acorde con la evolución de la bolsa. Por dividendos se espera un " ?rpd1 "%, que es más de lo que te está dando " ?empresa2 ", por eso te propongo cambiar los valores por los de esta otra. Aunque se pague el 1% del coste del cambio te saldría rentable")

@@ -1,7 +1,7 @@
 ; Si el PER es Bajo y el RPD alto, la empresa está infravalorada
 (defrule InfravaloracionGeneral
     (Modulo 3)
-    ?f <- (Valor (EtiqPER Bajo) (EtiqRPD Alto) (Valoracion ~Infravalorado))
+    ?f <- (Valor (EtiqPER Bajo) (EtiqRPD Alto) (Valoracion ~Infravalorado ?x))
 
     =>
 
@@ -13,8 +13,9 @@
 ; infravalorada
 (defrule InfravaloracionCaida
     (Modulo 3)
-    ?f <- (Valor (EtiqPER Bajo) (VarMensual ?mes) (Valoracion ~Infravalorado)
-                 (VarTrimestral ?trim) (VarSemestral ?sem) (VarAnual ?anual))
+    ?f <- (Valor (EtiqPER Bajo) (VarMensual ?mes)
+                 (Valoracion ~Infravalorado ?x) (VarTrimestral ?trim)
+                 (VarSemestral ?sem) (VarAnual ?anual))
     (and
         ; El experto indicó que "subir no mucho" es estar entre un 0% y un 10%
         (> ?mes 0) (< ?mes 10)
@@ -54,7 +55,7 @@
     (Modulo 3)
     ?f <- (Valor (EtiqPER Medio) (EtiqRPD Alto) (Tam Grande)
                  (VarMensual ?mes) (VarRelativaSector ?varSector)
-                 (Valoracion ~Infravalorado))
+                 (Valoracion ~Infravalorado ?x))
     (and
         (>= ?mes 0) ; La empresa no está bajando
         (> ?varSector 0) ; Se comporta mejor que su sector
