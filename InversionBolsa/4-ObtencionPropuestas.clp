@@ -6,7 +6,11 @@
     (ValorCartera (Nombre ?valor) (Peligroso true ?razon) (Acciones ?acc))
     (Valor (Nombre ?valor) (VarMensual ?mes) (VarRelativaSector ?rel)
            (RPD ?rpd))
+
+           (printout t "Recalculando propuestas..." crlf)
     =>
+    (printout t "Recalculando propuestas..." crlf)
+
     (assert
         (Propuesta
             (Propuesta Vender ?valor NULL)
@@ -33,6 +37,7 @@
     (test (> ?dinero ?precio))
 
     =>
+    (printout t "Recalculando propuestas..." crlf)
 
     (assert
         (Propuesta
@@ -66,6 +71,7 @@
     (test (neq ?per 0)) ; Evitamos dividir por cero.
 
     =>
+    (printout t "Recalculando propuestas..." crlf)
 
     (assert
         (Propuesta
@@ -98,6 +104,7 @@
     (test (> ?rpd1 (+ ?rpa2 ?rpd2 1)))
 
     =>
+    (printout t "Recalculando propuestas..." crlf)
 
     (assert
         (Propuesta

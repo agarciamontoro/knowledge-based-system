@@ -38,6 +38,55 @@
     (assert (MejoresPropuestas ?p1 ?p2 ?p3 ?p4 ?p5))
 )
 
+; Argumentos:
+;   * Nombre de la empresa a vender
+;   * Precio de la acción de la empresa
+;   * Número de hecho del valor de la cartera
+;   * Número de acciones actuales
+;   * Número de acciones a vender. Si es NULL se pregunta al usuario
+(deffunction venderAcciones(?empresa ?precio ?valorCartera ?accActuales ?accVender)
+    (retract ?f)
+
+    (if (eq ?accVender NULL) then
+        ; Le solicitamos al usuario el número de acciones a vender
+        (printout t "Introduce el número de acciones de " ?empresa " que quieres comprar: ")
+        (bind ?accVender (read))
+
+        ; Nos aseguramos de que el número de acciones introducido es correcto
+        (while (not (and (>= ?accVender 0) (<= ?accVender ?accActuales) ) ) do
+            (format t "El número de acciones debe estar entre [%d, %d]: "
+                0 ?accActuales
+            )
+            (bind ?accVender (read))
+        )
+    )
+
+    ; Eliminamos el antiguo valor de la cartera
+    (retract ?valorCartera)
+
+    ; Calculamos el nuevo número de acciones de la empresa que poseemos
+    (bind ?nuevasAcciones (- ?accActuales ?accVender))
+
+    ; Si aún tenemos acciones añadimos un Valor a la cartera con los nuevos
+    ; datos
+    (if (> ?nuevasAcciones 0) then
+        (bind ?nuevoValor (* ?nuevasAcciones ?precio))
+        (assert
+            (ValorCartera (Nombre ?empresa) (Acciones ?nuevasAcciones)
+                          (Valor ?nuevoValor))
+        )
+    )
+
+    ; Actualizamos el capital líquido (hay que tener en cuenta la comisión del
+    ; 0.5% al hacer una transacción)
+    (bind ?beneficios (* 0.955 (* ?precio ?accVender)))
+    (modify ?disponible (Valor ?beneficios))
+
+    ; Informamos de que la transacción se ha completado correctamente
+    (printout t "Se han vendido " ?accVender " acciones de la empresa "
+        ?empresa "." crlf)
+)
+
 ; Imprime el estado actual de la cartera
 (defrule ImprimirCartera
     (Modulo 5)
@@ -186,6 +235,13 @@
             (assert (Cambiar ?empresaAVender ?empresaAComprar))
         )
     )
+
+    ; (retract ?propuesta)
+    ; Eliminamos todas las propuestas para volver a recalcular
+    (do-for-all-facts ((?p Propuesta)) TRUE
+        (printout t "Borrando la propuesta " ?p crlf)
+        (retract ?p)
+    )
 )
 
 ; TODO: Qué pasa si ya hay un valor en la cartera de ?empresa
@@ -209,7 +265,7 @@
 
         ; Nos aseguramos de que el número de acciones introducido es correcto
         (while (not (and (> ?accComprar 0) (<= ?accComprar ?accMax) ) ) do
-            (format t "\n El número de acciones debe estar entre [%d, %d]: "
+            (format t "El número de acciones debe estar entre [%d, %d]: "
                 0 ?accMax
             )
             (bind ?accComprar (read))
@@ -249,10 +305,10 @@
     )
 
     ; Informamos de que la transacción se ha completado correctamente
-    (printout t "Se han comprado " ?accComprar " acciones de la empresa "
+    (printout t "Ahora tienes " ?accComprar " acciones de la empresa "
         ?empresa "." crlf)
 
-    ; Actualizamos las propuestas tras el cambio producido
+    ; Volvemos al módulo 4 tras el cambio producido
     (assert (Modulo 4))
 )
 
@@ -275,7 +331,7 @@
 
         ; Nos aseguramos de que el número de acciones introducido es correcto
         (while (not (and (>= ?accVender 0) (<= ?accVender ?accActuales) ) ) do
-            (format t "\n El número de acciones debe estar entre [%d, %d]: "
+            (format t "El número de acciones debe estar entre [%d, %d]: "
                 0 ?accActuales
             )
             (bind ?accVender (read))
@@ -307,7 +363,7 @@
     (printout t "Se han vendido " ?accVender " acciones de la empresa "
         ?empresa "." crlf)
 
-    ; Actualizamos las propuestas tras el cambio producido
+    ; Volvemos al módulo 4 tras el cambio producido
     (assert (Modulo 4))
 )
 
@@ -332,7 +388,7 @@
     (bind ?accVender (read))
 
     (while (not (and (>= ?accVender 0) (<= ?accVender ?accActuales) ) ) do
-        (format t "\n El número de acciones debe estar entre [%d, %d]: "
+        (format t "El número de acciones debe estar entre [%d, %d]: "
             0 ?accActuales
         )
         (bind ?accVender (read))
