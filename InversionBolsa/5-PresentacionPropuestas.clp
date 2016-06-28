@@ -222,53 +222,7 @@
 
     ; Restamos el valor de la transacción al capital líquido
     (modify ?disponible (Valor (- ?liquido ?valorTransaccion)))
-
-    ; ; Si ya tenemos en la cartera acciones de la empresa en la que queremos
-    ; ; invertir, modificamos el hecho. Si no, creamos uno nuevo.
-    ; (if (any-factp
-    ;         ((?vc ValorCartera))
-    ;         (eq ?empresa (fact-slot-value ?vc Nombre))
-    ;     ) then
-    ;
-    ;     ; Obtenemos el número actual de acciones
-    ;     (bind ?vcAcc (fact-slot-value ?vc Acciones))
-    ;     (bind ?nuevasAcc (+ ?vcAcc ?accComprar))
-    ;
-    ;     ; Actualizamos los datos
-    ;     (modify ?vc (Acciones ?nuevasAcc))
-    ;     (modify ?vc (Valor (* ?nuevasAcc ?precio)))
-    ;
-    ; else
-    ;     ; Añadimos el nuevo valor a la cartera con el número de acciones
-    ;     ; comprado y su valor (sin la comisión del 0.5)
-    ;     (assert
-    ;         (ValorCartera (Nombre ?empresa) (Acciones ?accComprar)
-    ;             (Valor ?valorTransaccionBruto)
-    ;         )
-    ;     )
-    ;
-    ;     ; Informamos de que la transacción se ha completado correctamente
-    ;     (printout t "Se han comprado " ?accComprar " acciones de la empresa "
-    ;         ?empresa "." crlf)
-    ; )
-
-    ; Si ya tenemos en la cartera acciones de la empresa en la que queremos
-    ; invertir, las acciones finales serán la suma de las compradas más las
-    ; actuales
-    ; (if (any-factp
-    ;         ((?vc ValorCartera))
-    ;         (eq ?empresa (fact-slot-value ?vc Nombre))
-    ;     ) then
-    ;
-    ;     ; Obtenemos el número actual de acciones
-    ;     (bind ?vcAcc (fact-slot-value ?vc Acciones))
-    ;     ;
-    ;     ; Actualizamos el valor de acciones que vamos a tener
-    ;     (bind ?accComprar (+ ?vcAcc ?accComprar))
-    ;
-    ;     ; Eliminamos el valor de la cartera
-    ;     (retract ?vc)
-    ; )
+    
     (do-for-fact
         ((?vc ValorCartera))
         (eq ?empresa (fact-slot-value ?vc Nombre))
