@@ -1,8 +1,3 @@
-(deftemplate TTT
-    (slot SSS)
-    (slot otroSlot)
-)
-
 ; Función genérica para encontrar el máximo valor del slot ?slot entre todos
 ; los hechos del template ?plantilla. Ejemplo de llamada: (valorMaximo TTT SSS)
 (deffunction valorMaximo (?plantilla ?slot)
@@ -20,5 +15,5 @@
         )
     )
 
-   (return (fact-slot-value ?max ?slot))
+   (return ?max)
 )

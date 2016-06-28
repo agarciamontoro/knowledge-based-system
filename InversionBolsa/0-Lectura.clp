@@ -6,9 +6,9 @@
     (Fichero Cartera  "DatosIbex35/Cartera.txt")
 )
 
-;------------------------------------------------------------------------
-;---------------- Lectura de los datos de los valores -------------------
-;------------------------------------------------------------------------
+;------------------------------------------------------------------------------
+;------------------- Lectura de los datos de los valores ----------------------
+;------------------------------------------------------------------------------
 
 ; Abre el fichero de valores
 (defrule openFileValores
@@ -65,9 +65,9 @@
     (close DatosValores)
 )
 
-;------------------------------------------------------------------------
-;---------------- Lectura de los datos de los sectores ------------------
-;------------------------------------------------------------------------
+;------------------------------------------------------------------------------
+;------------------- Lectura de los datos de los sectores ---------------------
+;------------------------------------------------------------------------------
 
 ; Abre el fichero de Sectores
 (defrule openFileSectores
@@ -117,9 +117,9 @@
     (close DatosSectores)
 )
 
-;------------------------------------------------------------------------
-;---------------- Lectura de los datos de las noticias ------------------
-;------------------------------------------------------------------------
+;------------------------------------------------------------------------------
+;------------------- Lectura de los datos de las noticias ---------------------
+;------------------------------------------------------------------------------
 
 ; Abre el fichero de Noticias
 (defrule openFileNoticias
@@ -160,9 +160,9 @@
 )
 
 
-;------------------------------------------------------------------------
-;----------------- Lectura de los datos de la cartera -------------------
-;------------------------------------------------------------------------
+;------------------------------------------------------------------------------
+;-------------------- Lectura de los datos de la cartera ----------------------
+;------------------------------------------------------------------------------
 
 ; Abre el fichero de Cartera
 (defrule openFileCartera
@@ -200,4 +200,25 @@
     (Modulo 0)
     =>
     (close DatosCartera)
+)
+
+
+;------------------------------------------------------------------------------
+;----------------------------- Cálculo del RPA --------------------------------
+;------------------------------------------------------------------------------
+; El rendimiento por año es, según el experto, la rentabilidad por dividendo
+; más la variación del valor en el último tramo temporal considerado, que se
+; usa como predicción de la variación anual próxima del valor. Hemos
+; considerado aquí como último tramo temporal el último trimestre; el experto
+; apuntó que no debíamos tomar valores muy lejanos, que no permiten tener en
+; cuenta el comporamiento actual del valor, ni demasiado cercanos, que centran
+; el cálculo sólo en un comportamiento muy reciente que no tiene por qué
+; reflejar el comportamiento general.
+(defrule calculoRPA
+    (Modulo 0)
+    ?f <- (Valor (RPD ?rpd) (VarTrimestral ?trim) (RPA NULL))
+
+    =>
+
+    (modify ?f (RPA (+ ?rpd ?trim)))
 )
