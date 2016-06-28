@@ -45,9 +45,7 @@
 ;   * Número de acciones actuales.
 ;   * Número de acciones a vender. Si es NULL se pregunta al usuario.
 ;   * Número de hecho del valor de la cartera de dinero disponible.
-(deffunction venderAcciones(?empresa ?precio ?valorCartera ?accActuales ?accVender ?disponible)
-    (retract ?f)
-
+(deffunction venderAcciones(?empresa ?precio ?valorCartera ?accActuales ?accVender)
     (if (eq ?accVender NULL) then
         ; Le solicitamos al usuario el número de acciones a vender
         (printout t "Introduce el número de acciones de " ?empresa " que quieres comprar: ")
@@ -81,10 +79,82 @@
     ; Actualizamos el capital líquido (hay que tener en cuenta la comisión del
     ; 0.5% al hacer una transacción)
     (bind ?beneficios (* 0.955 (* ?precio ?accVender)))
-    (modify ?disponible (Valor ?beneficios))
+    (do-for-fact
+        ((?disponible ValorCartera))
+        (eq DISPONIBLE (fact-slot-value ?disponible Nombre))
+
+        (modify ?disponible (Valor ?beneficios))
+    )
 
     ; Informamos de que la transacción se ha completado correctamente
     (printout t "Se han vendido " ?accVender " acciones de la empresa "
+        ?empresa "." crlf)
+)
+
+; Argumentos:
+;   * Nombre de la empresa a vender.
+;   * Precio de la acción de la empresa.
+;   * Número de hecho del valor de la cartera.
+;   * Número de acciones actuales.
+;   * Número de acciones a vender. Si es NULL se pregunta al usuario.
+;   * Número de hecho del valor de la cartera de dinero disponible.
+(deffunction comprarAcciones(?empresa ?precio ?accComprar ?liquido)
+    (if (eq ?accComprar NULL) then
+        ; Calculamos el máximo número posible de acciones a comprar
+        (bind ?accMax (integer (/ ?liquido (* 1.005 ?precio))))
+
+        ; Le solicitamos al usuario el número de acciones a comprar
+        (printout t "Introduce el número de acciones de " ?empresa " que quieres comprar: ")
+        (bind ?accComprar (read))
+
+        ; Nos aseguramos de que el número de acciones introducido es correcto
+        (while (not (and (> ?accComprar 0) (<= ?accComprar ?accMax) ) ) do
+            (format t "El número de acciones debe estar entre [%d, %d]: "
+                0 ?accMax
+            )
+            (bind ?accComprar (read))
+        )
+    )
+
+    ; Calculamos el valor de la transacción, añadiéndole un 0.5% de comisión
+    (bind ?valorTransaccionBruto (* ?accComprar ?precio))
+    (bind ?valorTransaccion (* 1.005 ?valorTransaccionBruto))
+
+    ; Restamos el valor de la transacción al capital líquido
+    (do-for-fact
+        ((?disponible ValorCartera))
+        (eq DISPONIBLE (fact-slot-value ?disponible Nombre))
+
+        (modify ?disponible (Valor (- ?liquido ?valorTransaccion)))
+    )
+
+    ; Si ya tenemos un valor en la cartera de la empresa en la que queremos
+    ; invertir, el nuevo número de acciones será la suma de las previas más
+    ; las compradas
+    (do-for-fact
+        ((?vc ValorCartera))
+        (eq ?empresa (fact-slot-value ?vc Nombre))
+
+        ; Obtenemos el número actual de acciones
+        (bind ?vcAcc (fact-slot-value ?vc Acciones))
+        ;
+        ; Actualizamos el valor de acciones que vamos a tener
+        (bind ?accComprar (+ ?vcAcc ?accComprar))
+
+        ; Eliminamos el valor de la cartera
+        (retract ?vc)
+    )
+
+    ; Añadimos el nuevo valor a la cartera con el número de acciones
+    ; comprado y su valor (sin la comisión del 0.5)
+    (assert
+        (ValorCartera (Nombre ?empresa) (Acciones ?accComprar)
+            (Valor ?valorTransaccionBruto)
+        )
+    )
+
+    ; Informamos de que la transacción se ha completado correctamente
+    (printout t "Ahora tienes " ?accComprar " acciones de la empresa "
         ?empresa "." crlf)
 )
 
@@ -256,58 +326,63 @@
 
     (retract ?f)
 
-    (if (eq ?accComprar NULL) then
-        ; Calculamos el máximo número posible de acciones a comprar
-        (bind ?accMax (integer (/ ?liquido (* 1.005 ?precio))))
+    (comprarAcciones ?empresa
+                     ?precio
+                     ?accComprar
+                     ?liquido)
 
-        ; Le solicitamos al usuario el número de acciones a comprar
-        (printout t "Introduce el número de acciones de " ?empresa " que quieres comprar: ")
-        (bind ?accComprar (read))
-
-        ; Nos aseguramos de que el número de acciones introducido es correcto
-        (while (not (and (> ?accComprar 0) (<= ?accComprar ?accMax) ) ) do
-            (format t "El número de acciones debe estar entre [%d, %d]: "
-                0 ?accMax
-            )
-            (bind ?accComprar (read))
-        )
-    )
-
-    ; Calculamos el valor de la transacción, añadiéndole un 0.5% de comisión
-    (bind ?valorTransaccionBruto (* ?accComprar ?precio))
-    (bind ?valorTransaccion (* 1.005 ?valorTransaccionBruto))
-
-    ; Restamos el valor de la transacción al capital líquido
-    (modify ?disponible (Valor (- ?liquido ?valorTransaccion)))
-
-    ; Si ya tenemos un valor en la cartera de la empresa en la que queremos
-    ; invertir, el nuevo número de acciones será la suma de las previas más
-    ; las compradas
-    (do-for-fact
-        ((?vc ValorCartera))
-        (eq ?empresa (fact-slot-value ?vc Nombre))
-
-        ; Obtenemos el número actual de acciones
-        (bind ?vcAcc (fact-slot-value ?vc Acciones))
-        ;
-        ; Actualizamos el valor de acciones que vamos a tener
-        (bind ?accComprar (+ ?vcAcc ?accComprar))
-
-        ; Eliminamos el valor de la cartera
-        (retract ?vc)
-    )
-
-    ; Añadimos el nuevo valor a la cartera con el número de acciones
-    ; comprado y su valor (sin la comisión del 0.5)
-    (assert
-        (ValorCartera (Nombre ?empresa) (Acciones ?accComprar)
-            (Valor ?valorTransaccionBruto)
-        )
-    )
-
-    ; Informamos de que la transacción se ha completado correctamente
-    (printout t "Ahora tienes " ?accComprar " acciones de la empresa "
-        ?empresa "." crlf)
+    ; (if (eq ?accComprar NULL) then
+    ;     ; Calculamos el máximo número posible de acciones a comprar
+    ;     (bind ?accMax (integer (/ ?liquido (* 1.005 ?precio))))
+    ;
+    ;     ; Le solicitamos al usuario el número de acciones a comprar
+    ;     (printout t "Introduce el número de acciones de " ?empresa " que quieres comprar: ")
+    ;     (bind ?accComprar (read))
+    ;
+    ;     ; Nos aseguramos de que el número de acciones introducido es correcto
+    ;     (while (not (and (> ?accComprar 0) (<= ?accComprar ?accMax) ) ) do
+    ;         (format t "El número de acciones debe estar entre [%d, %d]: "
+    ;             0 ?accMax
+    ;         )
+    ;         (bind ?accComprar (read))
+    ;     )
+    ; )
+    ;
+    ; ; Calculamos el valor de la transacción, añadiéndole un 0.5% de comisión
+    ; (bind ?valorTransaccionBruto (* ?accComprar ?precio))
+    ; (bind ?valorTransaccion (* 1.005 ?valorTransaccionBruto))
+    ;
+    ; ; Restamos el valor de la transacción al capital líquido
+    ; (modify ?disponible (Valor (- ?liquido ?valorTransaccion)))
+    ;
+    ; ; Si ya tenemos un valor en la cartera de la empresa en la que queremos
+    ; ; invertir, el nuevo número de acciones será la suma de las previas más
+    ; ; las compradas
+    ; (do-for-fact
+    ;     ((?vc ValorCartera))
+    ;     (eq ?empresa (fact-slot-value ?vc Nombre))
+    ;
+    ;     ; Obtenemos el número actual de acciones
+    ;     (bind ?vcAcc (fact-slot-value ?vc Acciones))
+    ;     ;
+    ;     ; Actualizamos el valor de acciones que vamos a tener
+    ;     (bind ?accComprar (+ ?vcAcc ?accComprar))
+    ;
+    ;     ; Eliminamos el valor de la cartera
+    ;     (retract ?vc)
+    ; )
+    ;
+    ; ; Añadimos el nuevo valor a la cartera con el número de acciones
+    ; ; comprado y su valor (sin la comisión del 0.5)
+    ; (assert
+    ;     (ValorCartera (Nombre ?empresa) (Acciones ?accComprar)
+    ;         (Valor ?valorTransaccionBruto)
+    ;     )
+    ; )
+    ;
+    ; ; Informamos de que la transacción se ha completado correctamente
+    ; (printout t "Ahora tienes " ?accComprar " acciones de la empresa "
+    ;     ?empresa "." crlf)
 
     ; Volvemos al módulo 4 tras el cambio producido
     (assert (Modulo 4))
@@ -330,7 +405,6 @@
                     ?valorCartera
                     ?accActuales
                     ?accVender
-                    ?disponible
     )
 
     ; (if (eq ?accVender NULL) then
@@ -381,8 +455,9 @@
     ?f <- (Cambiar ?empresaAVender ?empresaAComprar)
     (Valor (Nombre ?empresaAVender) (Precio ?precioAVender))
     (Valor (Nombre ?empresaAComprar) (Precio ?precioAComprar))
-    (ValorCartera (Nombre ?empresaAVender) (Acciones ?accActuales))
-    ?disponible <- (ValorCartera (Nombre DISPONIBLE) (Valor ?dineroDisponible))
+    ?valorCartera <- (ValorCartera (Nombre ?empresaAVender) (Acciones
+                        ?accActuales))
+    (ValorCartera (Nombre DISPONIBLE) (Valor ?dineroDisponible))
 
     =>
 
@@ -404,12 +479,26 @@
 	)
 
     ; Vendemos las acciones indicadas por el usuario
-    (assert (Vender ?empresaAVender ?accVender))
+    ; (assert (Vender ?empresaAVender ?accVender))
+
+    (venderAcciones ?empresaAVender
+                    ?precioAVender
+                    ?valorCartera
+                    ?accActuales
+                    ?accVender
+    )
 
     ; Compramos las máximas acciones posibles que podamos con el dinero ganado
     ; en la venta anterior: la parte entera del producto accVender * ratio
     (bind ?accComprar (integer (* ?accVender ?ratio)))
-    (assert (Comprar ?empresaAComprar ?accComprar))
+    ; (assert (Comprar ?empresaAComprar ?accComprar))
+
+    (comprarAcciones ?empresaAComprar
+                     ?precioAComprar
+                     ?accComprar
+                     ?dineroDisponible
+    )
+
 
     ; El dinero restante (el dinero obtenido al vender ?accVender acciones
     ; menos el dinero obtenido al comprar ?accComprar acciones) lo metemos en
@@ -417,5 +506,14 @@
     (bind ?beneficio (* ?accVender  ?precioAVender))
     (bind ?inversion (* ?accComprar ?precioAComprar))
     (bind ?restante (- ?beneficio ?inversion))
-    (modify ?disponible (Valor (+ ?dineroDisponible ?restante)))
+
+    ; Actualizamos el dinero metálico disponible
+    (do-for-fact
+        ((?disponible ValorCartera))
+        (eq DISPONIBLE (fact-slot-value ?disponible Nombre))
+
+        (modify ?disponible (Valor (+ ?dineroDisponible ?restante)))
+    )
+
+    (assert (Modulo 4))
 )
