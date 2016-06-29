@@ -1,8 +1,15 @@
 ; Definición de los nombres de los archivos que contienen los datos
 (deffacts NombresFicheros
+    ; Fichero con los datos actuales de los valores del mercado
     (Fichero Valores  "Datos/Analisis.txt")
+
+    ; Fichero con los datos actuales de los sectores del mercado
     (Fichero Sectores "Datos/AnalisisSectores.txt")
+
+    ; Fichero con los datos actuales de las noticias
     (Fichero Noticias "Datos/Noticias.txt")
+
+    ; Fichero con los datos actuales de la cartera de valores del usuario
     (Fichero Cartera  "Datos/Cartera.txt")
 )
 

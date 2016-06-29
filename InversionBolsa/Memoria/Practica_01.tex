@@ -333,25 +333,37 @@
         \end{enumerate}
     \end{enumerate}
 
+    Con respecto a la implementación de este módulo, es importante destacar que se ha encapsulado el trabajo de la compra y venta de acciones en sendas funciones ---\code{(comprarAcciones)} y \code{(venderAcciones)}---, que se llaman desde las reglas de ejecución de propuesta cuando es necesario; si la propuesta a ejecutar es relativa a un cambio de acciones, se llama a ambas funciones.
+
+    Asimismo, la funcionalidad de obtener las mejores cinco propuestas se ha encapsulado en la función \code{(calcularMejoresPropuestas)}.
+
+    El uso de funciones junto con las reglas ha facilitado la implementación y sencillez del módulo, separando de forma lógica la interacción con el usuario de la ejecución de las propuestas elegidas por este.
+
     \section{Manual de uso del sistema}
 
-    Para ejecutar el sistema hay que prestar atención al único archivo del que aún no hemos hablado: \code{InversionBolsa.clp}. Desde él se cargan todos los módulos y se añade el hecho \code{(Modulo 0)} para que el sistema comience.\footnote{La estructura de este archivo está tomada de la práctica de mi compañero Jacinto Carrasco.} Así, para ejecutar el sistema sólo hay que abrir una terminal en el directorio donde se encuentran todos los archivos y ejecutar la siguiente orden:
+    El archivo \code{InversionBolsa.clp} es el clave para ejecutar el sistema. Desde él se cargan todos los módulos y se añade el hecho \code{(Modulo 0)}.\footnote{La estructura de este archivo está tomada de la práctica de mi compañero Jacinto Carrasco.} Así, para ejecutar el sistema sólo hay que abrir una terminal en el directorio donde se encuentran todos los archivos y ejecutar la siguiente orden:
     \begin{center}
         \code{clips -f InversionBolsa.clp}
     \end{center}
 
-    El usuario verá entonces el menú principal, ilustrado en la figura \ref{fig:menu}.
-
+    Antes de comenzar, el usuario puede indicar la ruta de los archivos de texto de entrada al sistema modificando los hechos declarados al principio del archivo \code{0-Lectura.clp}. Modificando las cadenas de texto que se ven en la figura \ref{fig:archivos}, el sistema tomará esos datos como entrada.
     \begin{center}
         \begin{figure}[!htb]
             \centering
-            \includegraphics[width=\textwidth]{01-MenuPrincipal.png}
-            \caption{Menú principal}
+            \includegraphics[width=0.7\textwidth]{07-ArchivosTexto.png}
+            \caption{Hechos que definen la ruta a los archivos de texto de entrada.}
+            \label{fig:archivos}
+        \end{figure}
+    \end{center}
+    Una vez en el sistema, el usuario verá un menú, ---véase figura \ref{fig:menu}---. En este punto se le solicitará qué opción quiere elegir. Veremos cada una de ellas en las siguientes secciones.
+    \begin{center}
+        \begin{figure}[!htb]
+            \centering
+            \includegraphics[width=0.8\textwidth]{01-MenuPrincipal.png}
+            \caption{Menú principal.}
             \label{fig:menu}
         \end{figure}
     \end{center}
-
-    En este punto se le solicita al usuario qué opción quiere elegir: el usuario debe introducir el número 1, 2, 3 o 4 y pulsar \code{[Entrar]}. Las siguientes secciones estudian cada una de las opciones por separado.
 
     \subsection{Estado actual de la cartera}
 
@@ -409,7 +421,16 @@
 
     \subsection{Terminar el sistema}
 
-    Por último, si se ejecuta
+    Por último, si se ejecuta la opción número 4, el sistema preguntará si se quiere actualizar el archivo en disco con el estado actual de la cartera. Si el usuario introduce la letra \code{s}, se guardará como en el apartado anterior y se saldrá; si se introduce la letra \code{n}, se saldrá sin guardar; en cualquier otro caso, se volverá a preguntar al usuario para que introduzca una opción correcta. En la figura \ref{fig:salir} se ve un caso de uso de esta opción.
+
+    \begin{center}
+        \begin{figure}[!htb]
+            \centering
+            \includegraphics[width=\textwidth]{06-Salir.png}
+            \caption{Salir del sistema.}
+            \label{fig:salir}
+        \end{figure}
+    \end{center}
 
 
 \end{document}
