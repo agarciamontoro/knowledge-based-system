@@ -88,7 +88,7 @@
     )
 
     ; Informamos de que la transacción se ha completado correctamente
-    (printout t "$> Se han vendido " ?accVender " acciones de la empresa "
+    (printout t "    Se han vendido " ?accVender " acciones de la empresa "
         ?empresa "." crlf)
 )
 
@@ -156,7 +156,7 @@
     )
 
     ; Informamos de que la transacción se ha completado correctamente
-    (printout t "$> Ahora tienes " ?accComprar " acciones de la empresa "
+    (printout t "    Ahora tienes " ?accComprar " acciones de la empresa "
         ?empresa "." crlf)
 )
 
@@ -210,7 +210,8 @@
     (printout t "--------------------------------------------------------------------------" crlf crlf)
     (printout t "    1 - Ver estado actual de la cartera" crlf)
     (printout t "    2 - Ver nuevas propuestas de movimientos" crlf)
-    (printout t "    3 - Salir del programa" crlf crlf)
+    (printout t "    3 - Guardar la cartera actual" crlf)
+    (printout t "    4 - Salir del programa" crlf crlf)
     (printout t "--------------------------------------------------------------------------" crlf crlf)
     (printout t "$> Teclee el número de la opción que desea ejecutar y pulse la tecla [Entrar]: ")
 
@@ -229,7 +230,11 @@
         )
 
         (case 3 then
-            (assert (Salir))
+            (assert (Guardar))
+        )
+
+        (case 4 then
+            (assert (Salir y guardar))
         )
 
         (default
@@ -328,7 +333,7 @@
 )
 
 (defrule comprarAcciones
-    (Modulo 5)
+    ?m <- (Modulo 5)
     ?f <- (Comprar ?empresa ?accComprar)
     (Valor (Nombre ?empresa) (Precio ?precio))
     ?disponible <- (ValorCartera (Nombre DISPONIBLE) (Valor ?liquido))
@@ -344,6 +349,7 @@
                      ?liquido)
 
     ; Recalculamos propuestas
+    (retract ?m)
     (assert (Modulo 4))
 
     (printout t crlf "$> Pulse la tecla [Entrar] para continuar... ")
@@ -351,7 +357,7 @@
 )
 
 (defrule venderAcciones
-    (Modulo 5)
+    ?m <- (Modulo 5)
     ?f <- (Vender ?empresa ?accVender)
     (Valor (Nombre ?empresa) (Precio ?precio))
     ?valorCartera <- (ValorCartera (Nombre ?empresa) (Acciones ?accActuales))
@@ -371,6 +377,7 @@
     )
 
     ; Recalculamos propuestas
+    (retract ?m)
     (assert (Modulo 4))
 
     (printout t crlf "$> Pulse la tecla [Entrar] para continuar... ")
@@ -378,7 +385,7 @@
 )
 
 (defrule cambiarAcciones
-    (Modulo 5)
+    ?m <- (Modulo 5)
     ?f <- (Cambiar ?empresaAVender ?empresaAComprar)
     (Valor (Nombre ?empresaAVender) (Precio ?precioAVender))
     (Valor (Nombre ?empresaAComprar) (Precio ?precioAComprar))
@@ -443,6 +450,7 @@
     )
 
     ; Recalculamos propuestas
+    (retract ?m)
     (assert (Modulo 4))
 
     (printout t crlf "$> Pulse la tecla [Entrar] para continuar... ")
@@ -454,9 +462,9 @@
 ;------------------------------------------------------------------------------
 
 
-(defrule Salir
+(defrule SalirGuardar
     (Modulo 5)
-    ?s <- (Salir)
+    ?s <- (Salir y guardar)
 
     =>
 
@@ -468,6 +476,7 @@
     (switch ?respuesta
         (case s then
             (assert (Guardar))
+            (assert (Salir))
         )
 
         (case n then
@@ -476,7 +485,7 @@
         )
 
         (default
-            (assert (Salir))
+            (assert (Salir y guardar))
         )
     )
 
@@ -498,8 +507,17 @@
         (printout streamCartera ?nombre " " ?acciones " " ?valor crlf)
     )
 
-    (printout t crlf "$> Datos guardadaos en " ?ficheroCartera
-        " ¡Hasta la próxima!" crlf)
+    (printout t crlf "$> Datos guardados en " ?ficheroCartera
+        "." crlf)
+)
 
+(defrule Salir
+    (declare (salience -1))
+    (Modulo 5)
+    (Salir)
+
+    =>
+
+    (printout t "$> ¡Hasta la próxima!" crlf)
     (exit)
 )
