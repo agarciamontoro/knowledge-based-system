@@ -19,13 +19,22 @@
 
     \section{Resumen del funcionamiento del sistema}
 
-    El sistema experto desarrollado actúa como un apoyo a la inversión en bolsa. Dada una cartera de valores, el estado actual del mercado y la situación político-económica que se deriva de las noticias de los medios de comunicación de los últimos días, el sistema oferta hasta cinco propuestas diferentes de movimientos de tres tipos: compra de acciones de un valor del que se espera una alta rentabilidad, venta de acciones de un valor de la cartera del que se espera una baja rentabilidad y un intercambio de acciones de un valor de la cartera a otro valor del mercado ---que puede estar o no en la cartera---.
+    El sistema experto desarrollado actúa como un apoyo a la inversión en bolsa. Dada una cartera de valores, el estado actual del mercado y la situación político-económica que se deriva de las noticias de los medios de comunicación de los últimos días, el sistema oferta hasta cinco propuestas diferentes de movimientos de tres tipos: compra de acciones de un valor del que se espera una alta rentabilidad, venta de acciones de un valor de la cartera del que se espera una baja rentabilidad y un intercambio de acciones de un valor de la cartera a otro valor del mercado ---que puede estar o no en la cartera--- para conseguir una mayor rentabilidad.
 
     El sistema es un apoyo, luego es el usuario el que tiene la última palabra en todas las propuestas: es él quien decide si ejecutar o no una propuesta y qué cantidad de acciones quiere comprar, vender o intercambiar cuando elige llevar a cabo una.
 
     Además, el sistema permite el almacenamiento de la cartera actual en cualquier momento; así, el resultado de ejecutar cualquier propuesta puede guardarse para días posteriores.
 
-    % TODO: Añadir diagrama del sistema.
+    En la figura \ref{fig:diagrama} se puede ver de forma gráfica el funcionamiento general del sistema, indicando sólo entradas y salidas sin entrar en detallar el funcionamiento interno del sistema.
+    \begin{center}
+        \begin{figure}[!htb]
+            \centering
+            \includegraphics[width=1.5\textwidth]{00-DiagramaSistema.png}
+            \caption{Diagrama general del sistema.}
+            \label{fig:diagrama}
+        \end{figure}
+    \end{center}
+
 
     \section{Proceso seguido en el desarrollo}
 
