@@ -73,13 +73,5 @@
     (slot Razon)
 )
 
-; ; Definición de los atributos propios de una posible propuesta al usuario
-; (deftemplate PropuestaViable
-;     (multislot Propuesta)
-;     (slot NumAcciones)
-;     (slot RE)
-;     (slot Razon)
-; )
-
 ; Definición de variables globales
 (defglobal ?*precioDinero* = 0)

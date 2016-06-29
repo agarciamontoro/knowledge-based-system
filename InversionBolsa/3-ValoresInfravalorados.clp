@@ -53,7 +53,7 @@
 ; bajando y se comporta mejor que su sector, la empresa está infravalorada
 (defrule InfravaloracionEmpresaGrande
     (Modulo 3)
-    ?f <- (Valor (EtiqPER Medio) (EtiqRPD Alto) (Tam Grande)
+    ?f <- (Valor (EtiqPER Medio) (EtiqRPD Alto) (Tam GRANDE)
                  (VarMensual ?mes) (VarRelativaSector ?varSector)
                  (Valoracion ~Infravalorado ?x))
     (and

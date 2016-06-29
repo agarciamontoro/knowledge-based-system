@@ -279,7 +279,7 @@
             )
         )
 
-        (printout t crlf "$> Introduce el número de la propuesta que quieras llevar a cabo (o el número 0 si no quieres realizar ninguna) y pulsa la tecla [Enter]: ")
+        (printout t crlf "$> Introduce el número de la propuesta que quieras llevar a cabo (o el número 0 si no quieres realizar ninguna) y pulsa la tecla [Entrar]: ")
 
         ; Guardamos las propuestas elegidas por el usuario.
         (bind ?propElegida (read))

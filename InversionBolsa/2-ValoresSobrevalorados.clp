@@ -11,7 +11,7 @@
 ; Si el PER es Mediano y el RPD es bajo la empresa está sobrevalorada
 (defrule SobrevaloracionEmpresaPequenia1
     (Modulo 2)
-    ?f <- (Valor (EtiqPER ?per) (EtiqRPD ?rpd) (Tam Pequenio)
+    ?f <- (Valor (EtiqPER ?per) (EtiqRPD ?rpd) (Tam PEQUENIA)
                  (Valoracion ~Sobrevalorado ?x))
     (or
         (eq ?per Alto)
@@ -33,7 +33,7 @@
 ; Si el RPD es Mediano y el PER es Alto la empresa está sobrevalorada
 (defrule SobrevaloracionEmpresaGrande
     (Modulo 2)
-    ?f <- (Valor (EtiqPER ?per) (EtiqRPD ?rpd) (Tam Grande)
+    ?f <- (Valor (EtiqPER ?per) (EtiqRPD ?rpd) (Tam GRANDE)
                  (Valoracion ~Sobrevalorado ?x))
     (or
         (and

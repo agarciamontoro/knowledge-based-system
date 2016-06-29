@@ -46,7 +46,7 @@
     ?f <- (Valor (Nombre ?valor) (Sector ?sector)
                  (Estabilidad ~Inestable))
     (Noticia (Nombre ?noticia) (Tipo Mala) (Antiguedad ?antig))
-    (or (eq ?noticia ?valor) (eq ?noticia ?sector) (eq ?noticia Economia))
+    (or (eq ?noticia ?valor) (eq ?noticia ?sector) (eq ?noticia ECONOMIA))
     (test (<= ?antig 2))
     =>
     (modify ?f (Estabilidad Inestable))
@@ -54,7 +54,7 @@
 
 ; Cambia al módulo 1
 (defrule AvanzarAModulo1
-    (declare (salience -10000))
+    (declare (salience -2))
     ?f <- (Modulo 0)
     =>
     (retract ?f)
