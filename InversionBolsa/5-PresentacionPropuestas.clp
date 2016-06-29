@@ -350,7 +350,7 @@
 
     ; Recalculamos propuestas
     (retract ?m)
-    (assert (Modulo 4))
+    (assert (Modulo 1))
 
     (printout t crlf "$> Pulse la tecla [Entrar] para continuar... ")
     (readline)
@@ -378,7 +378,7 @@
 
     ; Recalculamos propuestas
     (retract ?m)
-    (assert (Modulo 4))
+    (assert (Modulo 1))
 
     (printout t crlf "$> Pulse la tecla [Entrar] para continuar... ")
     (readline)
@@ -451,7 +451,7 @@
 
     ; Recalculamos propuestas
     (retract ?m)
-    (assert (Modulo 4))
+    (assert (Modulo 1))
 
     (printout t crlf "$> Pulse la tecla [Entrar] para continuar... ")
     (readline)
@@ -493,10 +493,12 @@
 
 (defrule Guardar
     (Modulo 5)
-    (Guardar)
+    ?g <- (Guardar)
     (Fichero Cartera ?ficheroCartera)
 
     =>
+
+    (retract ?g)
 
     (open ?ficheroCartera streamCartera "w")
 
@@ -507,8 +509,12 @@
         (printout streamCartera ?nombre " " ?acciones " " ?valor crlf)
     )
 
+    (close streamCartera)
+
     (printout t crlf "$> Datos guardados en " ?ficheroCartera
         "." crlf)
+    (printout t crlf "$> Pulse la tecla [Entrar] para continuar... ")
+    (readline)
 )
 
 (defrule Salir
