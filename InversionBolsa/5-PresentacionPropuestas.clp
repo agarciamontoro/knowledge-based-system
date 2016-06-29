@@ -38,22 +38,23 @@
     (assert (MejoresPropuestas ?p1 ?p2 ?p3 ?p4 ?p5))
 )
 
+; Función que vende acciones de un valor de la cartera
 ; Argumentos:
-;   * Nombre de la empresa a vender.
-;   * Precio de la acción de la empresa.
-;   * Número de hecho del valor de la cartera.
-;   * Número de acciones actuales.
-;   * Número de acciones a vender. Si es NULL se pregunta al usuario.
-;   * Número de hecho del valor de la cartera de dinero disponible.
+;   * ?empresa: Nombre de la empresa a vender.
+;   * ?precio: Precio de la acción de la empresa.
+;   * ?valorCartera: Número de hecho del valor de la cartera.
+;   * ?accActuales: Número de acciones actuales.
+;   * ?accVender: Número de acciones a vender.
+;        Si es NULL se pregunta al usuario.
 (deffunction venderAcciones(?empresa ?precio ?valorCartera ?accActuales ?accVender)
     (if (eq ?accVender NULL) then
         ; Le solicitamos al usuario el número de acciones a vender
-        (printout t "Introduce el número de acciones de " ?empresa " que quieres comprar: ")
+        (printout t "$> Introduce el número de acciones de " ?empresa " que quieres comprar: ")
         (bind ?accVender (read))
 
         ; Nos aseguramos de que el número de acciones introducido es correcto
         (while (not (and (>= ?accVender 0) (<= ?accVender ?accActuales) ) ) do
-            (format t "El número de acciones debe estar entre [%d, %d]: "
+            (format t "$> ¡Cuidado! El número de acciones debe estar en el rango [%d, %d]: "
                 0 ?accActuales
             )
             (bind ?accVender (read))
@@ -87,29 +88,30 @@
     )
 
     ; Informamos de que la transacción se ha completado correctamente
-    (printout t "Se han vendido " ?accVender " acciones de la empresa "
+    (printout t "$> Se han vendido " ?accVender " acciones de la empresa "
         ?empresa "." crlf)
 )
 
+
+; Función que compra acciones de un valor
 ; Argumentos:
-;   * Nombre de la empresa a vender.
-;   * Precio de la acción de la empresa.
-;   * Número de hecho del valor de la cartera.
-;   * Número de acciones actuales.
-;   * Número de acciones a vender. Si es NULL se pregunta al usuario.
-;   * Número de hecho del valor de la cartera de dinero disponible.
+;   * ?empresa: Nombre de la empresa a comprar.
+;   * ?precio Precio de la acción de la empresa.
+;   * ?accComprar: Número de acciones a comprar.
+;       Si es NULL se pregunta al usuario.
+;   * ?liquido: Dinero disponible
 (deffunction comprarAcciones(?empresa ?precio ?accComprar ?liquido)
     (if (eq ?accComprar NULL) then
         ; Calculamos el máximo número posible de acciones a comprar
         (bind ?accMax (integer (/ ?liquido (* 1.005 ?precio))))
 
         ; Le solicitamos al usuario el número de acciones a comprar
-        (printout t "Introduce el número de acciones de " ?empresa " que quieres comprar: ")
+        (printout t "$> Introduce el número de acciones de " ?empresa " que quieres comprar: ")
         (bind ?accComprar (read))
 
         ; Nos aseguramos de que el número de acciones introducido es correcto
         (while (not (and (> ?accComprar 0) (<= ?accComprar ?accMax) ) ) do
-            (format t "El número de acciones debe estar entre [%d, %d]: "
+            (format t "$> ¡Cuidado! El número de acciones debe estar en el rango [%d, %d]: "
                 0 ?accMax
             )
             (bind ?accComprar (read))
@@ -154,7 +156,7 @@
     )
 
     ; Informamos de que la transacción se ha completado correctamente
-    (printout t "Ahora tienes " ?accComprar " acciones de la empresa "
+    (printout t "$> Ahora tienes " ?accComprar " acciones de la empresa "
         ?empresa "." crlf)
 )
 
@@ -173,14 +175,14 @@
         (bind ?valor (fact-slot-value ?valorC Valor))
 
         (if (eq ?nombre DISPONIBLE) then
-            (printout t "Capital líquido: " ?valor "€." crlf)
+            (printout t "    Capital líquido: " ?valor "€." crlf)
         else
-            (printout t ?nombre ": " ?acciones " acciones con un valor de "
+            (printout t "    " ?nombre ": " ?acciones " acciones con un valor de "
                 ?valor "€." crlf)
         )
     )
 
-    (printout t crlf "Pulse la tecla [Entrar] para continuar... ")
+    (printout t crlf "$> Pulse la tecla [Entrar] para continuar... ")
     (readline)
 )
 
@@ -201,17 +203,16 @@
 
     (retract ?f)
 
-    (printout t crlf crlf)
-    (printout t "------------------------------------------------------" crlf)
-    (printout t "------ SISTEMA DE APOYO A LA INVERSIÓN EN BOLSA ------" crlf)
-    (printout t "------              Menú principal              ------" crlf)
-    (printout t "------------------------------------------------------" crlf)
+    (printout t crlf)
+    (printout t "--------------------------------------------------------------------------" crlf)
+    (printout t "---------------- SISTEMA DE APOYO A LA INVERSIÓN EN BOLSA ----------------" crlf)
+    (printout t "----------------              Menú principal              ----------------" crlf)
+    (printout t "--------------------------------------------------------------------------" crlf crlf)
     (printout t "    1 - Ver estado actual de la cartera" crlf)
     (printout t "    2 - Ver nuevas propuestas de movimientos" crlf)
-    (printout t "    3 - Salir del programa" crlf)
-    (printout t "------------------------------------------------------" crlf)
-    (printout t "    Teclee el número de la opción que desea ejecutar"crlf)
-    (printout t "    y pulse la tecla [Entrar]: ")
+    (printout t "    3 - Salir del programa" crlf crlf)
+    (printout t "--------------------------------------------------------------------------" crlf crlf)
+    (printout t "$> Teclee el número de la opción que desea ejecutar y pulse la tecla [Entrar]: ")
 
     (bind ?opcionElegida (read))
 
@@ -228,7 +229,7 @@
         )
 
         (case 3 then
-            (retract ?mod)
+            (assert (Salir))
         )
 
         (default
@@ -248,34 +249,43 @@
 
     (retract ?f)
 
-    (bind ?i 0)
-    (bind ?hechosPropuestas (create$ ?p1 ?p2 ?p3 ?p4 ?p5))
-    (foreach ?p ?hechosPropuestas
-        (bind ?i (+ ?i 1))
+    (if (eq ?p1 FALSE) then
+        (printout t "$> Lo sentimos, en este momento no tenemos propuesas que ofrecerte." crlf)
+    else
+        (bind ?numPropuesta 0)
+        (bind ?hechosPropuestas (create$ ?p1 ?p2 ?p3 ?p4 ?p5))
+        (foreach ?p ?hechosPropuestas
+            (if (neq ?p FALSE) then
+                (bind ?numPropuesta (+ ?numPropuesta 1))
 
-        (bind ?propuesta (fact-slot-value ?p PropuestaRedactada))
-        (bind ?re (fact-slot-value ?p RE))
-        (bind ?razon (fact-slot-value ?p Razon))
+                (bind ?propuesta (fact-slot-value ?p PropuestaRedactada))
+                (bind ?re (fact-slot-value ?p RE))
+                (bind ?razon (fact-slot-value ?p Razon))
 
+                (printout t "------------------" crlf)
+                (printout t "PROPUESTA NÚMERO " ?numPropuesta ":")
+                (printout t crlf "------------------" crlf)
+                (printout t "    ¿Qué deberías hacer? ---------------> "
+                ?propuesta "." crlf)
+                (printout t "    ¿Cuál es la rentabilidad esperada? -> "
+                ?re "%" crlf)
+                (printout t "    ¿Por qué deberías hacerlo? ---------> "
+                ?razon "." crlf crlf)
+            )
+        )
 
-        (printout t crlf "------------------" crlf)
-        (printout t "PROPUESTA NÚMERO " ?i ":")
-        (printout t crlf "------------------" crlf)
-        (printout t tab "¿Qué deberías hacer? ----------------> "
-            ?propuesta "." crlf)
-        (printout t tab "¿Cuál es la rentabilidad esperada ? -> "
-            ?re "." crlf)
-        (printout t tab "¿Por qué deberías hacerlo? ----------> "
-            ?razon "." crlf)
-    )
+        (printout t crlf "$> Introduce el número de la propuesta que quieras llevar a cabo (o el número 0 si no quieres realizar ninguna) y pulsa la tecla [Enter]: ")
 
-    (printout t crlf "Introduzca el número de la propuesta que quieras llevar a cabo (o el número 0 si no quieres realizar ninguna): ")
+        ; Guardamos las propuestas elegidas por el usuario.
+        (bind ?propElegida (read))
+        (while (or (< ?propElegida 0) (> ?propElegida ?numPropuesta))
+            (printout t "$> ¡Cuidado! Introduce un entero entre 0 y " ?numPropuesta ": ")
+            (bind ?propElegida (read))
+        )
 
-    ; Guardamos las propuestas elegidas por el usuario.
-    (bind ?propElegida (read))
-
-    (if (neq ?propElegida 0) then
-        (assert (PropuestaElegida (nth$ ?propElegida ?hechosPropuestas)))
+        (if (neq ?propElegida 0) then
+            (assert (PropuestaElegida (nth$ ?propElegida ?hechosPropuestas)))
+        )
     )
 )
 
@@ -307,15 +317,12 @@
         )
     )
 
-    ; (retract ?propuesta)
     ; Eliminamos todas las propuestas para volver a recalcular
     (do-for-all-facts ((?p Propuesta)) TRUE
-        (printout t "Borrando la propuesta " ?p crlf)
         (retract ?p)
     )
 )
 
-; TODO: Qué pasa si ya hay un valor en la cartera de ?empresa
 (defrule comprarAcciones
     (Modulo 5)
     ?f <- (Comprar ?empresa ?accComprar)
@@ -326,66 +333,17 @@
 
     (retract ?f)
 
+    ; Ejecutamos la compra
     (comprarAcciones ?empresa
                      ?precio
                      ?accComprar
                      ?liquido)
 
-    ; (if (eq ?accComprar NULL) then
-    ;     ; Calculamos el máximo número posible de acciones a comprar
-    ;     (bind ?accMax (integer (/ ?liquido (* 1.005 ?precio))))
-    ;
-    ;     ; Le solicitamos al usuario el número de acciones a comprar
-    ;     (printout t "Introduce el número de acciones de " ?empresa " que quieres comprar: ")
-    ;     (bind ?accComprar (read))
-    ;
-    ;     ; Nos aseguramos de que el número de acciones introducido es correcto
-    ;     (while (not (and (> ?accComprar 0) (<= ?accComprar ?accMax) ) ) do
-    ;         (format t "El número de acciones debe estar entre [%d, %d]: "
-    ;             0 ?accMax
-    ;         )
-    ;         (bind ?accComprar (read))
-    ;     )
-    ; )
-    ;
-    ; ; Calculamos el valor de la transacción, añadiéndole un 0.5% de comisión
-    ; (bind ?valorTransaccionBruto (* ?accComprar ?precio))
-    ; (bind ?valorTransaccion (* 1.005 ?valorTransaccionBruto))
-    ;
-    ; ; Restamos el valor de la transacción al capital líquido
-    ; (modify ?disponible (Valor (- ?liquido ?valorTransaccion)))
-    ;
-    ; ; Si ya tenemos un valor en la cartera de la empresa en la que queremos
-    ; ; invertir, el nuevo número de acciones será la suma de las previas más
-    ; ; las compradas
-    ; (do-for-fact
-    ;     ((?vc ValorCartera))
-    ;     (eq ?empresa (fact-slot-value ?vc Nombre))
-    ;
-    ;     ; Obtenemos el número actual de acciones
-    ;     (bind ?vcAcc (fact-slot-value ?vc Acciones))
-    ;     ;
-    ;     ; Actualizamos el valor de acciones que vamos a tener
-    ;     (bind ?accComprar (+ ?vcAcc ?accComprar))
-    ;
-    ;     ; Eliminamos el valor de la cartera
-    ;     (retract ?vc)
-    ; )
-    ;
-    ; ; Añadimos el nuevo valor a la cartera con el número de acciones
-    ; ; comprado y su valor (sin la comisión del 0.5)
-    ; (assert
-    ;     (ValorCartera (Nombre ?empresa) (Acciones ?accComprar)
-    ;         (Valor ?valorTransaccionBruto)
-    ;     )
-    ; )
-    ;
-    ; ; Informamos de que la transacción se ha completado correctamente
-    ; (printout t "Ahora tienes " ?accComprar " acciones de la empresa "
-    ;     ?empresa "." crlf)
-
-    ; Volvemos al módulo 4 tras el cambio producido
+    ; Recalculamos propuestas
     (assert (Modulo 4))
+
+    (printout t crlf "$> Pulse la tecla [Entrar] para continuar... ")
+    (readline)
 )
 
 (defrule venderAcciones
@@ -400,6 +358,7 @@
 
     (retract ?f)
 
+    ; Ejecutamos la venta
     (venderAcciones ?empresa
                     ?precio
                     ?valorCartera
@@ -407,47 +366,11 @@
                     ?accVender
     )
 
-    ; (if (eq ?accVender NULL) then
-    ;     ; Le solicitamos al usuario el número de acciones a vender
-    ;     (printout t "Introduce el número de acciones de " ?empresa " que quieres comprar: ")
-    ;     (bind ?accVender (read))
-    ;
-    ;     ; Nos aseguramos de que el número de acciones introducido es correcto
-    ;     (while (not (and (>= ?accVender 0) (<= ?accVender ?accActuales) ) ) do
-    ;         (format t "El número de acciones debe estar entre [%d, %d]: "
-    ;             0 ?accActuales
-    ;         )
-    ;         (bind ?accVender (read))
-    ;     )
-    ; )
-    ;
-    ; ; Eliminamos el antiguo valor de la cartera
-    ; (retract ?valorCartera)
-    ;
-    ; ; Calculamos el nuevo número de acciones de la empresa que poseemos
-    ; (bind ?nuevasAcciones (- ?accActuales ?accVender))
-    ;
-    ; ; Si aún tenemos acciones añadimos un Valor a la cartera con los nuevos
-    ; ; datos
-    ; (if (> ?nuevasAcciones 0) then
-    ;     (bind ?nuevoValor (* ?nuevasAcciones ?precio))
-    ;     (assert
-    ;         (ValorCartera (Nombre ?empresa) (Acciones ?nuevasAcciones)
-    ;                       (Valor ?nuevoValor))
-    ;     )
-    ; )
-    ;
-    ; ; Actualizamos el capital líquido (hay que tener en cuenta la comisión del
-    ; ; 0.5% al hacer una transacción)
-    ; (bind ?beneficios (* 0.955 (* ?precio ?accVender)))
-    ; (modify ?disponible (Valor ?beneficios))
-    ;
-    ; ; Informamos de que la transacción se ha completado correctamente
-    ; (printout t "Se han vendido " ?accVender " acciones de la empresa "
-    ;     ?empresa "." crlf)
-
-    ; Volvemos al módulo 4 tras el cambio producido
+    ; Recalculamos propuestas
     (assert (Modulo 4))
+
+    (printout t crlf "$> Pulse la tecla [Entrar] para continuar... ")
+    (readline)
 )
 
 (defrule cambiarAcciones
@@ -467,20 +390,18 @@
     (bind ?ratio (/ ?precioAVender ?precioAComprar))
 
     ; Le solicitamos al usuario el número de acciones a intercambiar
-    (printout t "Por cada acción de " ?empresaAVender " puedes comprar " ?ratio " acciones de " ?empresaAComprar ". Por favor, introduce el número de acciones que quieres vender de " ?empresaAVender " y nosotros calcularemos cuántas comprar de " ?empresaAComprar ": ")
+    (printout t "$> Por cada acción de " ?empresaAVender " puedes comprar " ?ratio " acciones de " ?empresaAComprar ". Por favor, introduce el número de acciones que quieres vender de " ?empresaAVender " y nosotros calcularemos cuántas comprar de " ?empresaAComprar ": ")
 
     (bind ?accVender (read))
 
     (while (not (and (>= ?accVender 0) (<= ?accVender ?accActuales) ) ) do
-        (format t "El número de acciones debe estar entre [%d, %d]: "
+        (format t "$> ¡Cuidado! El número de acciones debe estar en el rango [%d, %d]: "
             0 ?accActuales
         )
         (bind ?accVender (read))
 	)
 
-    ; Vendemos las acciones indicadas por el usuario
-    ; (assert (Vender ?empresaAVender ?accVender))
-
+    ; Ejecutamos la venta
     (venderAcciones ?empresaAVender
                     ?precioAVender
                     ?valorCartera
@@ -488,11 +409,12 @@
                     ?accVender
     )
 
-    ; Compramos las máximas acciones posibles que podamos con el dinero ganado
-    ; en la venta anterior: la parte entera del producto accVender * ratio
+    ; Calculamos el número máximo de acciones que podemos comprar con el dinero
+    ; ganado en la venta anterior: la parte entera del producto
+    ; accVender * ratio
     (bind ?accComprar (integer (* ?accVender ?ratio)))
-    ; (assert (Comprar ?empresaAComprar ?accComprar))
 
+    ; Ejecutamos la compra
     (comprarAcciones ?empresaAComprar
                      ?precioAComprar
                      ?accComprar
@@ -515,5 +437,64 @@
         (modify ?disponible (Valor (+ ?dineroDisponible ?restante)))
     )
 
+    ; Recalculamos propuestas
     (assert (Modulo 4))
+
+    (printout t crlf "$> Pulse la tecla [Entrar] para continuar... ")
+    (readline)
+)
+
+;------------------------------------------------------------------------------
+;-------------------- Gestión de la salida del sistema ------------------------
+;------------------------------------------------------------------------------
+
+
+(defrule Salir
+    (Modulo 5)
+    ?s <- (Salir)
+
+    =>
+
+    (retract ?s)
+
+    (printout t "$> ¿Quiere guardar la cartera antes de salir? [s]í/[n]o: ")
+    (bind ?respuesta (read))
+
+    (switch ?respuesta
+        (case s then
+            (assert (Guardar))
+        )
+
+        (case n then
+            (printout t "$> ¡Hasta la próxima!" crlf)
+            (exit)
+        )
+
+        (default
+            (assert (Salir))
+        )
+    )
+
+)
+
+(defrule Guardar
+    (Modulo 5)
+    (Guardar)
+
+    =>
+
+    (bind ?ficheroCartera "DatosIbex35/carteraNueva.txt")
+    (open ?ficheroCartera streamCartera "w")
+
+    (do-for-all-facts ((?v ValorCartera)) TRUE
+        (bind ?nombre (fact-slot-value ?v Nombre))
+        (bind ?acciones (fact-slot-value ?v Acciones))
+        (bind ?valor (fact-slot-value ?v Valor))
+        (printout streamCartera ?nombre " " ?acciones " " ?valor crlf)
+    )
+
+    (printout t crlf "$> Datos guardadaos en " ?ficheroCartera
+        " ¡Hasta la próxima!" crlf)
+
+    (exit)
 )
