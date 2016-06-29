@@ -1,3 +1,5 @@
+; Función que carga todos los módulos e introduce el hecho
+; inicial que hace que se ejecute todo.
 (deffunction main()
     (clear)
 
@@ -30,4 +32,5 @@
     (run)
 )
 
+; Ejecuta el programa
 (main)
