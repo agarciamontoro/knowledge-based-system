@@ -289,6 +289,10 @@
     )
 )
 
+;------------------------------------------------------------------------------
+;------------------------ Ejecución de propuestas -----------------------------
+;------------------------------------------------------------------------------
+
 (defrule ejecutarPropuesta
     (Modulo 5)
     ?f <- (PropuestaElegida ?propuesta)
@@ -390,7 +394,8 @@
     (bind ?ratio (/ ?precioAVender ?precioAComprar))
 
     ; Le solicitamos al usuario el número de acciones a intercambiar
-    (printout t "$> Por cada acción de " ?empresaAVender " puedes comprar " ?ratio " acciones de " ?empresaAComprar ". Por favor, introduce el número de acciones que quieres vender de " ?empresaAVender " y nosotros calcularemos cuántas comprar de " ?empresaAComprar ": ")
+    (printout t "$> Por cada acción de " ?empresaAVender " puedes comprar " ?ratio " acciones de " ?empresaAComprar "." crlf
+        "$> Por favor, introduce el número de acciones que quieres vender de " ?empresaAVender " y nosotros calcularemos cuántas comprar de " ?empresaAComprar ": ")
 
     (bind ?accVender (read))
 
@@ -480,10 +485,10 @@
 (defrule Guardar
     (Modulo 5)
     (Guardar)
+    (Fichero Cartera ?ficheroCartera)
 
     =>
 
-    (bind ?ficheroCartera "DatosIbex35/carteraNueva.txt")
     (open ?ficheroCartera streamCartera "w")
 
     (do-for-all-facts ((?v ValorCartera)) TRUE

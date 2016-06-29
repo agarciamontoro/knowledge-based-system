@@ -1,9 +1,9 @@
 ; Definición de los nombres de los archivos que contienen los datos
 (deffacts NombresFicheros
-    (Fichero Valores  "DatosIbex35/Analisis.txt")
-    (Fichero Sectores "DatosIbex35/AnalisisSectores.txt")
-    (Fichero Noticias "DatosIbex35/Noticias.txt")
-    (Fichero Cartera  "DatosIbex35/Cartera.txt")
+    (Fichero Valores  "Datos/Analisis.txt")
+    (Fichero Sectores "Datos/AnalisisSectores.txt")
+    (Fichero Noticias "Datos/Noticias.txt")
+    (Fichero Cartera  "Datos/Cartera.txt")
 )
 
 ;------------------------------------------------------------------------------
