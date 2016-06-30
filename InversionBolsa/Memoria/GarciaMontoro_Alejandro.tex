@@ -23,9 +23,9 @@
 
     El sistema es un apoyo, luego es el usuario el que tiene la última palabra en todas las propuestas: es él quien decide si ejecutar o no una propuesta y qué cantidad de acciones quiere comprar, vender o intercambiar cuando elige llevar a cabo una.
 
-    Además, el sistema permite el almacenamiento de la cartera actual en cualquier momento; así, el resultado de ejecutar cualquier propuesta puede guardarse para días posteriores.
+    Además, el sistema permite el almacenamiento en disco de la cartera actual en cualquier momento; así, el resultado de ejecutar cualquier propuesta puede guardarse para días posteriores.
 
-    En la figura \ref{fig:diagrama} se puede ver de forma gráfica el funcionamiento general del sistema, indicando sólo entradas y salidas sin entrar en detallar el funcionamiento interno del sistema.
+    En la figura \ref{fig:diagrama} se puede ver de forma gráfica el funcionamiento general del sistema, indicando sólo entradas y salidas sin entrar en detalle em el funcionamiento interno del sistema, que estudiaremos en las secciones siguientes.
     \begin{center}
         \begin{figure}[!htb]
             \centering
@@ -40,23 +40,23 @@
 
     El desarrollo del sistema ha seguido ---a pequeña escala y teniendo en cuenta que experto, directivo y usuarios eran simulados por una misma persona--- el proceso de ingeniería del conocimiento estudiado en las sesiones de teoría: estudio del problema en documentos relevantes, reuniones iniciales con el experto para una primera toma de contacto, reuniones posteriores para delimitar los detalles y contactos con los directivos y usuarios para definir entradas y salidas del sistema.
 
-    Por último, se ha llevado a cabo un proceso de validación y verificación intentando replicar las técnicas vistas en las sesiones de teoría.
+    Por último, se ha llevado a cabo un proceso de verificación y validación intentando replicar las técnicas vistas en las sesiones de teoría.
 
     \subsection{Sesiones con el experto}
 
     En total se produjeron tres reuniones con el experto: una en clase de teoría y dos en clases de prácticas. El conocimiento que faltaba para poder diseñar e implementar el sistema se extrajo del documento \emph{online} proporcionado por el experto.
 
-    En la primera sesión ---la producida en una clase de teoría, y en la que el experto actuó también de directivo y usuario---, se definieron de forma muy general las entradas y salidas del sistema, se indicaron las primeras tareas, como la detección de valores estables o peligrosos y se obtuvo una primera idea del razonamiento que el usuario quería ver cuando se le ofreciera una propuesta. Además, se dieron algunas pinceladas sobre lo que sería el funcionamiento del sistema final, como el apunte de que se mostraran las cinco mejores propuestas calculadas y de dónde había que obtener las variables de entrada.
+    En la primera sesión ---la producida en una clase de teoría, y en la que el experto actuó también de directivo y usuario---, se definieron de forma muy general las entradas y salidas del sistema, se indicaron las primeras tareas, como la detección de valores estables o peligrosos, y se obtuvo una primera idea del razonamiento que el usuario quería ver cuando se le ofreciera una propuesta. Además, se dieron algunas pinceladas sobre lo que sería el funcionamiento del sistema final, como el apunte de que se mostraran las cinco mejores propuestas calculadas y de dónde había que obtener las variables de entrada.
 
     En la segunda sesión, ya en una clase de prácticas, se detallaron de forma más precisa los módulos ---los módulos de detección de valores estables e inestables, de valores peligrosos, de valores sobrevalorados, de valores infravalorados y el módulo de gestión de la inversión---, estructura que se ha mantenido hasta el final. En concreto se dio una idea de cómo funcionaría el módulo de detección de valores peligrosos, indicando que las entradas serían los valores de la bolsa durante los últimos 5 días y cómo se han desplazado, las noticias y la cartera de acciones ---podemos ver cómo la estructura de las entradas se mantuvo casi completamente hasta el final--- y las salidas serían los valores peligrosos; además, se indicaron un par de reglas que formarían parte de este módulo.
 
     En esta misma sesión se empezó además a definir la estructura global del sistema, con un esqueleto vacío que implementara ya la comunicación entre módulos, y se determinaron las estructuras de conocimiento con las que se trabajaría.
 
-    Por último, en la tercera sesión con el experto se definieron algunos conceptos bursátiles que los ingenieros del conocimiento desconocíamos, se dieron nuevas reglas y se discutió acerca de la idoneidad de tener el conocimiento por escrito ---de donde se obtuvo el documento \emph{online} que ha sido clave en el desarrollo del sistema---.
+    Por último, en la tercera sesión con el experto se definieron algunos conceptos bursátiles que los ingenieros del conocimiento desconocíamos, se dieron nuevas reglas y se discutió acerca de la idoneidad de tener el conocimiento por escrito, de donde se obtuvo el documento \emph{online} que ha sido clave en el desarrollo del sistema.
 
-    \subsection{Procedimiento de validación y verificación}
+    \subsection{Procedimiento de verificación y validación}
 
-    El proceso de validación y verificación del sistema se ha realizado siguiendo las pautas vistas en las sesiones teóricas, intentando explotar al máximo las técnicas propias de ingeniería del conocimiento sin dejar de lado las técnicas generales de ingeniería del software que en ocasiones se podían aplicar.
+    El proceso de verificación y validación del sistema se ha realizado siguiendo las pautas vistas en las sesiones teóricas, intentando explotar al máximo las técnicas propias de ingeniería del conocimiento sin dejar de lado las técnicas generales de ingeniería del software que en ocasiones se podían aplicar.
 
     Veamos paso por paso el procedimiento seguido.
 
@@ -65,20 +65,20 @@
 
     El estudio de la consistencia se ha hecho analizando el comportamiento de las reglas y cómo unas actuaban sobre otras, creando ejemplos ficticios para poder llegar a estados de conflicto. Lo único que se detectó en este caso fue un estado en el que convivían en la base de datos dos hechos del tipo \code{(Modulo $i$)} y \code{(Modulo $j$)}, con $i \neq j$, y se decidió trabajar con un único hecho siempre, que se modifica cuando se quiere cambiar de módulo.
 
-    Por otro lado, en el estudio de la sintaxis se detectó que muchos de los valores de los atributos de las empresas no estaban bien expresados, como en el caso de los valores \code{DISPONIBLE} y \code{GRANDE}, que hasta ese momento se estaban usando en minúscula y hacían que ninguna de las reglas que lo contenían se ejecutara.
+    Por otro lado, en el estudio de la sintaxis se detectó que muchos de los valores de los atributos de las empresas no estaban bien expresados, como en el caso de los valores \code{DISPONIBLE} y \code{GRANDE}, que hasta ese momento se estaban usando en minúscula y hacían que ninguna de las reglas que lo contenían se ejecutara. Una vez arreglados estos problemas, hubo que estudiar de nuevo la consistencia, en un ciclo que acabó cuando no se detectaron más errores de consistencia ni de sintaxis.
 
-    La completitud se analizó comparando el documento \emph{online} dado por el experto con el código, haciendo de nuevo casos de prueba para detectar algún fallo. En esta fase no se detectó nada y, tras un estudio exhaustivo del documento se concluyó que el sistema era completo.
+    Por último, la completitud se analizó comparando el documento \emph{online} dado por el experto con el código, haciendo de nuevo casos de prueba para detectar algún fallo. Tras un estudio exhaustivo del documento se concluyó que el sistema era completo.
 
     \subsubsection*{Validación}
     El último paso de este proceso ha sido la validación; es decir, la comprobación de que el código implementado, además de ser correcto, cumple con las necesidades del usuario.
 
     En un primer momento se ha realizado un proceso de validación objetiva, en el que se ha analizado cada una de las reglas implementadas para asegurarnos de que cumplían con lo dictado por el experto ---en este caso, con lo descrito en el documento \emph{online}---.
 
-    Para llevar a cabo esta tarea se han hecho tests unitarios para comprobar que las reglas cumplían con toda la casuística considerada: se han añadido a la cartera valores ficticios que cumplieran con las hipótesis, otros que no lo hicieran e intentando buscar casos extremos que pudieran hacer ver un mal funcionamiento del sistema, como puede ser el caso de la compra de más acciones de las que podemos pagar o de la venta de un número negativo de acciones. Se ha intentado aquí también estudiar la jerarquía entre las reglas, analizando cuáles se ejecutaban primero y si esto producía algún error. Con esta técnica se pudo comprobar, por ejemplo, que las noticias positivas no tenían más poder que las negativas; esto se cambió convenientemente asignando prioridades a las reglas.
+    Para llevar a cabo esta tarea se han hecho tests unitarios para comprobar que las reglas cumplían con toda la casuística considerada: se han añadido a la cartera valores ficticios que cumplieran con las hipótesis, otros que no lo hicieran y se ha intentado buscar casos extremos que pudieran hacer ver un mal funcionamiento del sistema, como puede ser el caso de la compra de más acciones de las que podemos pagar o de la venta de un número negativo de acciones. Se ha estudiado aquí también la jerarquía entre las reglas, analizando cuáles se ejecutaban primero y si esto producía algún error. Con esta técnica se pudo comprobar, por ejemplo, que las noticias positivas no tenían más poder que las negativas en aquel momento; esto se cambió convenientemente asignando prioridades a las reglas.
 
     Además, se ha estudiado la implementación y se ha analizado su modularidad, estudiando la facilidad de mantenimiento y la claridad del código. En esta fase se pulieron muchos detalles, intentando encapsular todo lo posible las reglas y los métodos para que fueran reutilizables y claros.
 
-    Por último, se ha llevado a cabo una validación interpretativa, en la que se ha actuado como usuarios con distintas necesidades para poder pulir la interacción con los mismos ---como no teníamos acceso a los usuarios finales, la valoración de estos aspectos ha sido llevada a cabo por el ingeniero del conocimiento, buscando siempre la máxima facilidad de uso---. Se han buscado así errores que no se vieron en la fase anterior ---de casos muy concretos, como la posibilidad de comprar acciones de un valor que ya teníamos en la cartera--- y modificando pequeños aspectos de usabilidad e interacción.
+    Por último, se ha llevado a cabo una validación interpretativa, en la que el ingeniero del conocimiento ha actuado como usuarios con distintas necesidades para poder pulir la interacción con los mismos ---como no teníamos acceso a los usuarios finales, la valoración de estos aspectos ha sido llevada a cabo por el ingeniero del conocimiento, buscando siempre la máxima facilidad de uso---. Se han buscado así errores que no se vieron en la fase anterior ---de casos muy concretos, como la posibilidad de comprar acciones de un valor que ya teníamos en la cartera, que hasta esta fase no existía--- y modificando pequeños aspectos de usabilidad e interacción.
 
     \section{Descripción detallada del sistema}
 
@@ -96,7 +96,7 @@
             \item Número de acciones: cantidad de acciones de esa empresa que tiene el usuario.
             \item Valor: cantidad de dinero que valen las acciones; este número ---en euros--- debe coincidir con el producto \code{número de acciones} $\times$ \code{precio de cada acción}.
         \end{itemize}
-        Este archivo debe contener, al menos, una línea con el nombre \code{DISPONIBLE}, que informa de la cantidad de dinero líquido disponible, indicada en el campo \code{Valor}. El campo \code{número de acciones} de esta línea es irrelevante, aunque suele coincidir con el de \code{Valor}.
+        Este archivo debe contener al menos una línea con el nombre \code{DISPONIBLE}, que informa de la cantidad de dinero líquido disponible, indicada en el campo \code{Valor}. El campo \code{número de acciones} de esta línea es irrelevante, aunque suele coincidir con el de \code{Valor}.\footnote{De hecho, en todo el sistema se ignora el campo \code{Número de acciones} de la línea cuyo nombre es \code{DISPONIBLE}, trabajando sobre el campo \code{Valor} y modificando única y exclusivamente este.}
 
         \item \textbf{Análisis de los valores del mercado}: Archivo de texto con información sobre el estado actual de  los valores del Ibex35. Cada línea del archivo se corresponde con un valor del Ibex35 y está compuesta por los siguientes campos, delimitados por espacios:
         \begin{itemize}
@@ -111,7 +111,7 @@
             \item EtiqPER: cadena de caracteres que indica el estado actual del PER: \code{Alto}, \code{Medio} o \code{Bajo}.
             \item EtiqRPD: cadena de caracteres que indica el estado actual del RPD: \code{Alto}, \code{Medio} o \code{Bajo}.
             \item Sector: cadena de caracterres que identifica de forma unívoca el sector al que pertenece la empresa.
-            \item Var5Dias: variación del precio respecto al que tenía hace cinc días ---en tanto por ciento---.
+            \item Var5Dias: variación del precio respecto al que tenía hace cinco días ---en tanto por ciento---.
             \item Perd3Consec: valor booleano que indica si la empresa ha tenido pérdidas durante los últimos tres días ---\code{true}--- o no ---\code{false}---.
             \item Perd5Consec: valor booleano que indica si la empresa ha tenido pérdidas durante los últimos cinco días ---\code{true}--- o no ---\code{false}---.
             \item VarRelativaSector: variación de los últimos cinco días relativa a la variación del sector en el mismo tramo temporal ---en tanto por ciento---.
@@ -124,13 +124,13 @@
 
         \item \textbf{Análisis de los sectores del mercado}: Archivo de texto con información sobre el estado actual de los sectores del Ibex35. Cada línea del archivo se corresponde con un sector del Ibex35 y está compuesta por los siguientes campos, delimitados por espacios:
         \begin{itemize}
-            \item Nombre: cadena de caracteres que identifica de forma unívoca un valor.
+            \item Nombre: cadena de caracteres que identifica de forma unívoca un sector.
             \item VarDia: variación del valor con respecto al día anterior ---en tanto por ciento---.
             \item Capitalización: valor total de la empresa ---en miles de euros---.
             \item Ratio precio-beneficio (PER): capitalización dividida por los beneficios anuales obtenidos por la empresa ---en tanto por ciento---.
             \item Rentabilidad por dividendo (RPD): ratio que indica la cantidad recibida por los accionistas por dividendos ---en tanto por uno---.
             \item Ibex: capitalización con respecto al total del Ibex ---en tanto por ciento---.
-            \item Var5Dias: variación del precio respecto al que tenía hace cinc días ---en tanto por ciento---.
+            \item Var5Dias: variación del precio respecto al que tenía hace cinco días ---en tanto por ciento---.
             \item Perd3Consec: valor booleano que indica si la empresa ha tenido pérdidas durante los últimos tres días ---\code{true}--- o no ---\code{false}---.
             \item Perd5Consec: valor booleano que indica si la empresa ha tenido pérdidas durante los últimos cinco días ---\code{true}--- o no ---\code{false}---.
             \item VarMensual: variación del valor con respecto al mes anterior ---en tanto por ciento---.
@@ -151,7 +151,7 @@
 
     El sistema produce un único tipo de salida: una serie de cinco transacciones propuestas, ordenadas de mayor a menor rentabilidad esperada. Cada propuesta se compone de los siguientes apartados:
     \begin{itemize}
-        \item Acción de la propuesta: aquí se indica qué se propone ---comprar, vender o intercambiar--- y cuáles son las empresas involuncradas en la transacción.
+        \item Acción de la propuesta: aquí se indica qué se propone ---comprar, vender o intercambiar--- y cuáles son las empresas involucradas en la transacción.
         \item Rentabilidad esperada: porcentaje de rentabilidad esperada tras ejecutar la transacción propuesta.
         \item Razón: se da un razonamiento exhaustivo de por qué se hace la propuesta, en qué se basa la catalogación de los valores y qué hechos han llevado al sistema a proponer la transacción.
     \end{itemize}
@@ -164,7 +164,7 @@
 
     Allí se define la estructura de la base de conocimiento, declarando plantillas para los valores del mercado y los sectores, para los valores de la cartera, para las noticias y para las propuestas generadas por el sistema.
 
-    Además, se define una variable global usada más tarde en el razonamiento: el precio del dinero, que es el tipo de interés fijado por el Banco Central Europeo para el préstamo de dinero a las entidades financieras; el 10 de marzo de 2016 este tipo de interés se fijó al 0\%. \footnote{Ver http://es.euribor-rates.eu/tipo-de-interes-del-BCE.asp}
+    Además, se define una variable global usada más tarde en el razonamiento: el precio del dinero, que es el tipo de interés fijado por el Banco Central Europeo para el préstamo de dinero a las entidades financieras; el 10 de marzo de 2016 se fijó este tipo de interés al 0\%. \footnote{Ver http://es.euribor-rates.eu/tipo-de-interes-del-BCE.asp}
 
     Por último, se genera la base de conocimiento inicial leyendo los ficheros especificados en la sección \ref{ch:varEntrada}, cuyo formato se supone correcto.
 
@@ -172,15 +172,16 @@
 
     \subsection{Especificación de los módulos}
 
-    Definimos aquí el objetivo, conocimiento utilizado y conocimiento deducido de cada uno de los módulos que componen el sistema. Para tener una idea general, resumimos a continuación la lista de módulos:
+    En esta sección se detalla el objetivo, el conocimiento utilizado y el conocimiento deducido de cada uno de los módulos que componen el sistema. Para tener una idea general, resumimos a continuación la lista de módulos:
 
-    \begin{itemize}
+    \begin{enumerate}\addtocounter{enumi}{-1}
         \item Módulo de lectura y detección de valores inestables.
+        \item Módulo de detección de valores peligrosos.
         \item Módulo de detección de valores sobrevalorados.
         \item Módulo de detección de valores infravalorados.
         \item Módulo de obtención de propuestas.
         \item Módulo de interacción con el usuario.
-    \end{itemize}
+    \end{enumerate}
 
     Además, es necesario explicar de antemano la técnica de gestión de módulos usada de forma unificada por todo el sistema:
 
@@ -190,10 +191,12 @@
 
     Al inicio del programa basta añadir el hecho \code{(Modulo 0)} para que todo el razonamiento sea ejecutado desde el principio.
 
+    Es importante apuntar en esta sección que los módulos se ejecutan de forma lineal automáticamente: primero el 0, luego el 1, y así hasta llegar al 5. El único salto hacia atrás que puede darse se produce cuando el usuario ejecuta una de las transacciones propuestas; como la cartera de valores habrá cambiado, el sistema necesita saltar del módulo 5 al 1 para volver a detectar valores peligrosos, sobrevalorados e infravalorados y para realizar las mejores propuestas en base a estos nuevos datos.
+
     \subsubsection{Módulo de lectura y detección de valores inestables}
     \label{ch:modLectura}
 
-    Este primer módulo, implementado en los archivos \code{0-EstructuraConocimiento.clp}, \code{0-Lectura.clp} y \code{0-ValoresInestables.clp}, tiene como objetivo la creación de la base de conocimiento inicial a partir de las variables de entrada, generando la estructura para albergar los hechos iniciales, leyendo la información que conformará esos hechos y haciendo el primer razonamiento del sistema: los valores inestables.
+    Este primer módulo, cuyo código está implementado en los archivos iniciales \code{0-EstructuraConocimiento.clp}, \code{0-Lectura.clp} y en el primer archivo de razonamiento \code{0-ValoresInestables.clp}, tiene como objetivo la creación de la base de conocimiento inicial a partir de las variables de entrada, generando la estructura para albergar los hechos iniciales, leyendo la información que conformará esos hechos y haciendo el primer razonamiento del sistema: los valores inestables.
 
     \subsubsection*{Estructura del conocimiento}
 
@@ -210,7 +213,15 @@
             \item Peligroso: indica si el valor es o no peligroso; además, contiene una cadena de caracteres que indica la razón por la que se ha marcado como peligroso. Sus valores pueden ser \code{false} y \code{true}.
         \end{itemize}
     \end{itemize}
-    En este primer archivo, como se indicó antes, se define como variable global el precio del dinero.
+    Además de las plantillas para los valores del mercado, los sectores del mercado, los valores de la cartera y las noticias, se añade en este módulo una plantilla para las propuestas, que tiene los siguientes campos:
+    \begin{itemize}
+        \item Propuesta: hecho de tipo \emph{multislot} que contiene: el nombre de la propuesta ---\code{Comprar}, \code{Vender} o \code{Cambiar}---, el nombre de la empresa a vender ---o \code{NULL} si la propuesta es \code{Comprar}--- y el nombre de la empresa a comprar ---o \code{NULL} si la propuesta es \code{Vender}---.
+        \item RE: rentabilidad esperada tras ejecutar la transacción ---en tanto por ciento---.
+        \item PropuestaRedactada: una cadena de caracteres con el mismo significado que el campo \code{Propuesta} pero redactada de manera que sea útil para imprimir por pantalla.
+        \item Razón: cadena de caracteres que explica por qué se hace la propuesta y en base a qué hechos.
+    \end{itemize}
+
+    Además, en este primer archivo, como se indicó antes, se define como variable global el precio del dinero.
 
     \subsubsection*{Lectura de los datos de entrada}
 
@@ -241,6 +252,19 @@
     \end{regla}
 
     Esta serie de reglas definen así la primera parte del razonamiento del sistema: dadas las variables de entrada ---en particular se hace uso de los hechos referentes a valores, a sectores y a noticias---, se obtienen como salida los valores estables o inestables del mercado ---modificando el campo \code{Estabilidad} en los hechos de los respectivos valores---.
+
+    \subsubsection{Módulo de valores peligrosos}
+    Este módulo tiene como objetivo detectar los valores de la cartera que son potencialmente peligrosos. Tiene como entrada la lista de hechos relativos a los valores del mercado y a los valores de la cartera y, como salida, los valores de la cartera con el campo \code{Peligroso} modificado si es necesario.
+
+    Tiene dos reglas sencillas, que son las siguientes:
+
+    \begin{regla}
+        Si un valor $V$ de la cartera es inestable y ha tenido pérdidas durante los tres últimos días, entonces $V$ es peligroso.
+    \end{regla}
+
+    \begin{regla}
+        Si un valor $V$ de la cartera ha tenido pérdidas durante los últimos cinco días y su caída con respecto a la del sector es mayor a un 5\%, entonces $V$ es peligroso.\footnote{El experto describió esta regla en el documento de una forma más ambigua, pero tras contactos posteriores con él se llegó al acuerdo de que la forma aquí expuesta ---es decir, que el campo \code{VarRelativaSectorChico} sea igual a \code{false}--- era la correcta.}
+    \end{regla}
 
     \subsubsection{Módulo de valores sobrevalorados}
 
@@ -310,7 +334,7 @@
 
         La rentabilidad esperada de esta propuesta es:
         \[
-        RE = 100 \frac{PER_{sector} - PER}{5 PER + RPD}
+        RE = 100 \frac{PER_{sector} - PER}{5 PER} + RPD
         \]
         donde $PER_{sector}$ es el $PER$ del sector al que pertenece $V$.
     \end{regla}
@@ -320,7 +344,7 @@
 
         La rentabilidad esperada de esta propuesta es:
         \[
-        RE = \frac{PER - PER_{sector} - RPD}{5 PER}
+        RE = \frac{PER - PER_{sector}}{5 PER} - RPD
         \]
         donde $PER_{sector}$ es el $PER$ del sector al que pertenece $V$.
     \end{regla}

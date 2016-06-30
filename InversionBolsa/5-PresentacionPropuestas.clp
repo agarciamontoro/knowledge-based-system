@@ -2,23 +2,26 @@
 ;--------------- Definición de funciones y reglas genéricas -------------------
 ;------------------------------------------------------------------------------
 
+
 ; Función que devuelve el índice de hecho de la mejor propuesta aún no marcada
 ; como viable
 (deffunction obtenerMejorPropuesta(?maxRE)
     ; "Inicializamos" el máximo a algo nulo
     (bind ?max FALSE)
 
-    ; Recorremos todos los hechos...
-    (do-for-all-facts ((?hecho Propuesta))
-        ;... cuyo RE sea menor que maxRE
-        (< (fact-slot-value ?hecho RE) ?maxRE)
+    (if (neq ?maxRE FALSE) then
+        ; Recorremos todos los hechos...
+        (do-for-all-facts ((?hecho Propuesta))
+            ;... cuyo RE sea menor que maxRE
+            (< (fact-slot-value ?hecho RE) ?maxRE)
 
-        ; Si el máximo no está aún inicializado o si el hecho actual tiene
-        ; ?slot mayor que el del máximo, actualizamos el máximo.
-        (if (or (not ?max)
-                (> (fact-slot-value ?hecho RE) (fact-slot-value ?max RE))
-            ) then
-            (bind ?max ?hecho)
+            ; Si el máximo no está aún inicializado o si el hecho actual tiene
+            ; ?slot mayor que el del máximo, actualizamos el máximo.
+            (if (or (not ?max)
+                    (> (fact-slot-value ?hecho RE) (fact-slot-value ?max RE))
+                ) then
+                (bind ?max ?hecho)
+            )
         )
     )
 
@@ -248,14 +251,14 @@
 (defrule visualizarPropuestas
     (Modulo 5)
     ?f <- (Imprimir MejoresPropuestas)
-    (MejoresPropuestas ?p1 ?p2 ?p3 ?p4 ?p5)
+    ?m <- (MejoresPropuestas ?p1 ?p2 ?p3 ?p4 ?p5)
 
     =>
 
     (retract ?f)
 
     (if (eq ?p1 FALSE) then
-        (printout t "$> Lo sentimos, en este momento no tenemos propuesas que ofrecerte." crlf)
+        (printout t "$> Lo sentimos, en este momento no tenemos propuestas que ofrecerte." crlf)
     else
         (bind ?numPropuesta 0)
         (bind ?hechosPropuestas (create$ ?p1 ?p2 ?p3 ?p4 ?p5))
@@ -289,6 +292,7 @@
         )
 
         (if (neq ?propElegida 0) then
+            (retract ?m)
             (assert (PropuestaElegida (nth$ ?propElegida ?hechosPropuestas)))
         )
     )

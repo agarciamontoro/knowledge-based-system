@@ -13,7 +13,6 @@
 ; es peligroso
 (defrule ValorPeligrosoVariacion
     (Modulo 1)
-    ; TODO: Mirar si la ValRelativaSectorGrande debe ser true o false :(
     (Valor (Nombre ?valor) (Perd5Consec true) (VarRelativaSectorChico false)
            (VarRelativaSector ?varRel))
     ?f <- (ValorCartera (Nombre ?valor) (Peligroso false))

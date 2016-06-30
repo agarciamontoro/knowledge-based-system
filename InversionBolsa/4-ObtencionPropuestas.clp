@@ -41,10 +41,10 @@
         (Propuesta
             (Propuesta Comprar NULL ?valor)
             (RE
-                (* 100 (/
-                    (- ?perMedio ?per)
-                    (+ (* 5 ?per) ?rpd)
-                ))
+                (+
+                    (* 100 (/ (- ?perMedio ?per) (* 5 ?per)))
+                    ?rpd
+                )
             )
             (Razon
                 (str-cat "Esta empresa está infravalorada -" ?razonInfra "- y seguramente el PER tienda al PER medio en 5 años, con lo que se debería revalorizar un " (/ (- ?perMedio ?per) (* 5 ?per)) "% anual a lo que habría que sumar el " ?rpd "% de beneficios por dividendos")
@@ -74,9 +74,9 @@
         (Propuesta
             (Propuesta Vender ?valor NULL)
             (RE
-                (/
-                    (- (- ?per ?perMedio) ?rpd)
-                    (* 5 ?per)
+                (-
+                    (* 100 (/ (- ?per ?perMedio) (* 5 ?per)))
+                    ?rpd
                 )
             )
             (Razon
